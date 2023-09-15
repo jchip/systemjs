@@ -50,5 +50,8 @@
   "collective": {
     "type": "opencollective",
     "url": "https://opencollective.com/systemjs"
+  },
+  "prettier": {
+    "singleQuote": true
   }
 }
