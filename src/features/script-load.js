@@ -41,8 +41,14 @@ systemJSPrototype.getCurrentScript = function () {
 };
 
 // Auto imports -> script tags can be inlined directly for load phase
-var lastAutoImportUrl, lastAutoImportDeps, lastAutoImportTimeout;
-var autoImportCandidates = {};
+var autoImports = {};
+function clearAutoImport(autoImport) {
+  if (autoImport) {
+    clearTimeout(autoImport.t);
+    delete autoImports[autoImport.s];
+  }
+}
+
 var systemRegister = systemJSPrototype.register;
 systemJSPrototype.register = function (deps, declare) {
   if (
@@ -51,29 +57,29 @@ systemJSPrototype.register = function (deps, declare) {
     typeof deps !== 'string'
   ) {
     var lastScript = this.getCurrentScript();
-    if (lastScript) {
-      lastAutoImportUrl = lastScript.src;
-      lastAutoImportDeps = deps;
-      // if this is already a System load, then the instantiate has already begun
-      // so this re-import has no consequence
+    var src = lastScript && lastScript.src;
+    if (src && !autoImports[src]) {
       var loader = this;
-      lastAutoImportTimeout = setTimeout(function () {
-        autoImportCandidates[lastScript.src] = [deps, declare];
-        loader.import(lastScript.src);
-      });
+      autoImports[src] = {
+        s: src,
+        // if this is already a System load, then the instantiate has already begun
+        // so this re-import has no consequence
+        t: setTimeout(function () {
+          autoImports[src].r = [deps, declare];
+          loader.import(src);
+        }),
+      };
     }
-  } else {
-    lastAutoImportDeps = undefined;
   }
   return systemRegister.call(this, deps, declare);
 };
 
 var lastWindowErrorUrl, lastWindowError;
 systemJSPrototype.instantiate = function (url, firstParentUrl) {
-  var autoImportRegistration = autoImportCandidates[url];
-  if (autoImportRegistration) {
-    delete autoImportCandidates[url];
-    return autoImportRegistration;
+  var autoImport = autoImports[url];
+  if (autoImport && autoImport.r) {
+    clearAutoImport(autoImport);
+    return autoImport.r;
   }
   var loader = this;
   return Promise.resolve(systemJSPrototype.createScript(url)).then(function (
@@ -81,6 +87,7 @@ systemJSPrototype.instantiate = function (url, firstParentUrl) {
   ) {
     return new Promise(function (resolve, reject) {
       script.addEventListener('error', function () {
+        clearAutoImport(autoImports[url]);
         reject(
           Error(
             errMsg(
@@ -95,17 +102,14 @@ systemJSPrototype.instantiate = function (url, firstParentUrl) {
         );
       });
       script.addEventListener('load', function () {
+        clearAutoImport(autoImports[url]);
         document.head.removeChild(script);
         // Note that if an error occurs that isn't caught by this if statement,
         // that getRegister will return null and a "did not instantiate" error will be thrown.
         if (lastWindowErrorUrl === url) {
           reject(lastWindowError);
         } else {
-          var register = loader.getRegister(url);
-          // Clear any auto import registration for dynamic import scripts during load
-          if (register && register[0] === lastAutoImportDeps)
-            clearTimeout(lastAutoImportTimeout);
-          resolve(register);
+          resolve(loader.getRegister(url));
         }
       });
       document.head.appendChild(script);
