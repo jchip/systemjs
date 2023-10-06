@@ -73,7 +73,7 @@ function processScripts() {
                 throw Error(
                   process.env.SYSTEM_PRODUCTION
                     ? res.status
-                    : 'Invalid status code: ' + res.status
+                    : 'Invalid status code: ' + res.status,
                 );
               return res.text();
             })
@@ -83,7 +83,7 @@ function processScripts() {
                   'W4',
                   process.env.SYSTEM_PRODUCTION
                     ? script.src
-                    : 'Error fetching systemjs-import map ' + script.src
+                    : 'Error fetching systemjs-import map ' + script.src,
                 ) +
                 '\n' +
                 err.message;
@@ -117,8 +117,8 @@ function extendImportMap(importMap, newMapText, newMapUrl) {
           : errMsg('W5', 'systemjs-importmap contains invalid JSON') +
               '\n\n' +
               newMapText +
-              '\n'
-      )
+              '\n',
+      ),
     );
   }
   resolveAndComposeImportMap(newMap, newMapUrl, importMap);

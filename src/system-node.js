@@ -5,7 +5,12 @@ import './features/node-fetch.js';
 import './extras/global.js';
 
 import { REGISTRY, systemJSPrototype } from './system-core.js';
-import { BASE_URL, baseUrl, resolveAndComposeImportMap, IMPORT_MAP } from './common.js';
+import {
+  BASE_URL,
+  baseUrl,
+  resolveAndComposeImportMap,
+  IMPORT_MAP,
+} from './common.js';
 
 export const System = global.System;
 
@@ -23,9 +28,9 @@ systemJSPrototype.resolve = function () {
   }
   return originalResolve.apply(this, arguments);
 };
-systemJSPrototype.addImportMap = function (newMap, mapBase){
-  applyImportMap(this, newMap, mapBase)
-}
+systemJSPrototype.addImportMap = function (newMap, mapBase) {
+  applyImportMap(this, newMap, mapBase);
+};
 
 export function applyImportMap(loader, newMap, mapBase) {
   ensureValidSystemLoader(loader);
@@ -39,7 +44,7 @@ export function setBaseUrl(loader, url) {
   loader[BASE_URL] = new URL(url).href;
 }
 
-function ensureValidSystemLoader (loader) {
+function ensureValidSystemLoader(loader) {
   if (!loader[REGISTRY])
     throw new Error('A valid SystemJS instance must be provided');
 }

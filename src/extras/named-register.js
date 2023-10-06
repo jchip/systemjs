@@ -26,8 +26,7 @@
 
   var register = systemJSPrototype.register;
   systemJSPrototype.register = function (name, deps, declare, metas) {
-    if (typeof name !== 'string')
-      return register.apply(this, arguments);
+    if (typeof name !== 'string') return register.apply(this, arguments);
     var define = [deps, declare, metas];
     this.registerRegistry[name] = define;
     if (!firstNamedDefine) {
@@ -77,5 +76,5 @@
     firstNamedDefine = null;
     firstName = null;
     return result;
-  }
+  };
 })(typeof self !== 'undefined' ? self : global);

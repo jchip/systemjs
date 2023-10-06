@@ -15,18 +15,29 @@ import { errMsg } from '../err-msg.js';
 
     var loader = this;
     return fetch(url, { credentials: 'same-origin' })
-    .then(function (res) {
-      if (!res.ok)
-        throw Error(errMsg(7, process.env.SYSTEM_PRODUCTION ? [res.status, res.statusText, parent].join(', ') : 'Fetch error: ' + res.status + ' ' + res.statusText + (parent ? ' loading from ' + parent : '')));
-      return res.text();
-    })
-    .then(function (source) {
-      return loader.transform.call(this, url, source);
-    })
-    .then(function (source) {
-      (0, eval)(source + '\n//# sourceURL=' + url);
-      return loader.getRegister(url);
-    });
+      .then(function (res) {
+        if (!res.ok)
+          throw Error(
+            errMsg(
+              7,
+              process.env.SYSTEM_PRODUCTION
+                ? [res.status, res.statusText, parent].join(', ')
+                : 'Fetch error: ' +
+                    res.status +
+                    ' ' +
+                    res.statusText +
+                    (parent ? ' loading from ' + parent : ''),
+            ),
+          );
+        return res.text();
+      })
+      .then(function (source) {
+        return loader.transform.call(this, url, source);
+      })
+      .then(function (source) {
+        (0, eval)(source + '\n//# sourceURL=' + url);
+        return loader.getRegister(url);
+      });
   };
 
   // Hookable transform function!

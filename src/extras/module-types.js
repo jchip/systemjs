@@ -4,11 +4,11 @@ import { resolveUrl } from '../common.js';
  * Loads JSON, CSS, Wasm module types based on file extension
  * filters and content type verifications
  */
-(function(global) {
+(function (global) {
   var systemJSPrototype = global.System.constructor.prototype;
 
   var moduleTypesRegEx = /^[^#?]+\.(css|html|json|wasm)([?#].*)?$/;
-  var _shouldFetch = systemJSPrototype.shouldFetch.bind(systemJSPrototype)
+  var _shouldFetch = systemJSPrototype.shouldFetch.bind(systemJSPrototype);
   systemJSPrototype.shouldFetch = function (url) {
     return _shouldFetch(url) || moduleTypesRegEx.test(url);
   };
@@ -19,38 +19,59 @@ import { resolveUrl } from '../common.js';
 
   var fetch = systemJSPrototype.fetch;
   systemJSPrototype.fetch = function (url, options) {
-    return fetch(url, options)
-    .then(function (res) {
-      if (options.passThrough)
-        return res;
+    return fetch(url, options).then(function (res) {
+      if (options.passThrough) return res;
 
-      if (!res.ok)
-        return res;
+      if (!res.ok) return res;
       var contentType = res.headers.get('content-type');
       if (jsonContentType.test(contentType))
-        return res.json()
-        .then(function (json) {
-          return new Response(new Blob([
-            'System.register([],function(e){return{execute:function(){e("default",' + JSON.stringify(json) + ')}}})'
-          ], {
-            type: 'application/javascript'
-          }));
+        return res.json().then(function (json) {
+          return new Response(
+            new Blob(
+              [
+                'System.register([],function(e){return{execute:function(){e("default",' +
+                  JSON.stringify(json) +
+                  ')}}})',
+              ],
+              {
+                type: 'application/javascript',
+              },
+            ),
+          );
         });
       if (cssContentType.test(contentType))
-        return res.text()
-        .then(function (source) {
-          source = source.replace(/url\(\s*(?:(["'])((?:\\.|[^\n\\"'])+)\1|((?:\\.|[^\s,"'()\\])+))\s*\)/g, function (match, quotes, relUrl1, relUrl2) {
-            return ['url(', quotes, resolveUrl(relUrl1 || relUrl2, url), quotes, ')'].join('');
-          });
-          return new Response(new Blob([
-            'System.register([],function(e){return{execute:function(){var s=new CSSStyleSheet();s.replaceSync(' + JSON.stringify(source) + ');e("default",s)}}})'
-          ], {
-            type: 'application/javascript'
-          }));
+        return res.text().then(function (source) {
+          source = source.replace(
+            /url\(\s*(?:(["'])((?:\\.|[^\n\\"'])+)\1|((?:\\.|[^\s,"'()\\])+))\s*\)/g,
+            function (match, quotes, relUrl1, relUrl2) {
+              return [
+                'url(',
+                quotes,
+                resolveUrl(relUrl1 || relUrl2, url),
+                quotes,
+                ')',
+              ].join('');
+            },
+          );
+          return new Response(
+            new Blob(
+              [
+                'System.register([],function(e){return{execute:function(){var s=new CSSStyleSheet();s.replaceSync(' +
+                  JSON.stringify(source) +
+                  ');e("default",s)}}})',
+              ],
+              {
+                type: 'application/javascript',
+              },
+            ),
+          );
         });
       if (wasmContentType.test(contentType))
-        return (WebAssembly.compileStreaming ? WebAssembly.compileStreaming(res) : res.arrayBuffer().then(WebAssembly.compile))
-        .then(function (module) {
+        return (
+          WebAssembly.compileStreaming
+            ? WebAssembly.compileStreaming(res)
+            : res.arrayBuffer().then(WebAssembly.compile)
+        ).then(function (module) {
           if (!global.System.wasmModules)
             global.System.wasmModules = Object.create(null);
           global.System.wasmModules[url] = module;
@@ -65,13 +86,22 @@ import { resolveUrl } from '../common.js';
                 setterSources.push('function(m){i[' + key + ']=m}');
               }
             });
-          return new Response(new Blob([
-            'System.register([' + deps.join(',') + '],function(e){var i={};return{setters:[' + setterSources.join(',') +
-            '],execute:function(){return WebAssembly.instantiate(System.wasmModules[' + JSON.stringify(url) +
-            '],i).then(function(m){e(m.exports)})}}})'
-          ], {
-            type: 'application/javascript'
-          }));
+          return new Response(
+            new Blob(
+              [
+                'System.register([' +
+                  deps.join(',') +
+                  '],function(e){var i={};return{setters:[' +
+                  setterSources.join(',') +
+                  '],execute:function(){return WebAssembly.instantiate(System.wasmModules[' +
+                  JSON.stringify(url) +
+                  '],i).then(function(m){e(m.exports)})}}})',
+              ],
+              {
+                type: 'application/javascript',
+              },
+            ),
+          );
         });
       return res;
     });

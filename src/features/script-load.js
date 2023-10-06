@@ -82,37 +82,37 @@ systemJSPrototype.instantiate = function (url, firstParentUrl) {
     return autoImport.r;
   }
   var loader = this;
-  return Promise.resolve(systemJSPrototype.createScript(url)).then(function (
-    script
-  ) {
-    return new Promise(function (resolve, reject) {
-      script.addEventListener('error', function () {
-        clearAutoImport(autoImports[url]);
-        reject(
-          Error(
-            errMsg(
-              3,
-              process.env.SYSTEM_PRODUCTION
-                ? [url, firstParentUrl].join(', ')
-                : 'Error loading ' +
-                    url +
-                    (firstParentUrl ? ' from ' + firstParentUrl : '')
-            )
-          )
-        );
+  return Promise.resolve(systemJSPrototype.createScript(url)).then(
+    function (script) {
+      return new Promise(function (resolve, reject) {
+        script.addEventListener('error', function () {
+          clearAutoImport(autoImports[url]);
+          reject(
+            Error(
+              errMsg(
+                3,
+                process.env.SYSTEM_PRODUCTION
+                  ? [url, firstParentUrl].join(', ')
+                  : 'Error loading ' +
+                      url +
+                      (firstParentUrl ? ' from ' + firstParentUrl : ''),
+              ),
+            ),
+          );
+        });
+        script.addEventListener('load', function () {
+          clearAutoImport(autoImports[url]);
+          document.head.removeChild(script);
+          // Note that if an error occurs that isn't caught by this if statement,
+          // that getRegister will return null and a "did not instantiate" error will be thrown.
+          if (lastWindowErrorUrl === url) {
+            reject(lastWindowError);
+          } else {
+            resolve(loader.getRegister(url));
+          }
+        });
+        document.head.appendChild(script);
       });
-      script.addEventListener('load', function () {
-        clearAutoImport(autoImports[url]);
-        document.head.removeChild(script);
-        // Note that if an error occurs that isn't caught by this if statement,
-        // that getRegister will return null and a "did not instantiate" error will be thrown.
-        if (lastWindowErrorUrl === url) {
-          reject(lastWindowError);
-        } else {
-          resolve(loader.getRegister(url));
-        }
-      });
-      document.head.appendChild(script);
-    });
-  });
+    },
+  );
 };

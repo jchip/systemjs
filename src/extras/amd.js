@@ -4,13 +4,17 @@ import { errMsg } from '../err-msg.js';
  * Support for AMD loading
  */
 (function (global) {
-  function unsupportedRequire () {
-    throw Error(process.env.SYSTEM_PRODUCTION ? errMsg(5) : errMsg(5, 'AMD require not supported.'));
+  function unsupportedRequire() {
+    throw Error(
+      process.env.SYSTEM_PRODUCTION
+        ? errMsg(5)
+        : errMsg(5, 'AMD require not supported.'),
+    );
   }
 
   var requireExportsModule = ['require', 'exports', 'module'];
 
-  function createAMDRegister (amdDefineDeps, amdDefineExec) {
+  function createAMDRegister(amdDefineDeps, amdDefineExec) {
     var exports = {};
     var module = { exports: exports };
     var depModules = [];
@@ -22,37 +26,34 @@ import { errMsg } from '../err-msg.js';
       if (id === 'require') {
         depModules[i] = unsupportedRequire;
         splice++;
-      }
-      else if (id === 'module') {
+      } else if (id === 'module') {
         depModules[i] = module;
         splice++;
-      }
-      else if (id === 'exports') {
+      } else if (id === 'exports') {
         depModules[i] = exports;
         splice++;
-      }
-      else {
+      } else {
         createSetter(i);
       }
-      if (splice)
-        amdDefineDeps[index] = id;
+      if (splice) amdDefineDeps[index] = id;
     }
-    if (splice)
-      amdDefineDeps.length -= splice;
+    if (splice) amdDefineDeps.length -= splice;
     var amdExec = amdDefineExec;
-    return [amdDefineDeps, function (_export) {
-      _export({ default: exports, __useDefault: true });
-      return {
-        setters: setters,
-        execute: function () {
-          var amdResult = amdExec.apply(exports, depModules);
-          if (amdResult !== undefined)
-            module.exports = amdResult;
-          _export(module.exports);
-          _export('default', module.exports);
-        }
-      };
-    }];
+    return [
+      amdDefineDeps,
+      function (_export) {
+        _export({ default: exports, __useDefault: true });
+        return {
+          setters: setters,
+          execute: function () {
+            var amdResult = amdExec.apply(exports, depModules);
+            if (amdResult !== undefined) module.exports = amdResult;
+            _export(module.exports);
+            _export('default', module.exports);
+          },
+        };
+      },
+    ];
 
     // needed to avoid iteration scope issues
     function createSetter(idx) {
@@ -79,14 +80,20 @@ import { errMsg } from '../err-msg.js';
     // define({})
     else if (typeof depArg === 'object') {
       deps = [];
-      exec = function () { return depArg };
+      exec = function () {
+        return depArg;
+      };
     }
     // define(function () {})
     else if (typeof depArg === 'function') {
       deps = requireExportsModule;
       exec = depArg;
     } else {
-      throw Error(process.env.SYSTEM_PRODUCTION ? errMsg(9) : errMsg(9, 'Invalid call to AMD define()'));
+      throw Error(
+        process.env.SYSTEM_PRODUCTION
+          ? errMsg(9)
+          : errMsg(9, 'Invalid call to AMD define()'),
+      );
     }
 
     var amdRegister = createAMDRegister(deps, exec);
@@ -96,11 +103,17 @@ import { errMsg } from '../err-msg.js';
         System.registerRegistry[name] = amdRegister;
         System.register(name, amdRegister[0], amdRegister[1]);
       } else
-        console.warn(process.env.SYSTEM_PRODUCTION ? errMsg('W6') : errMsg('W6', 'Include named-register.js for full named define support'));
-        // TODO: create new warning number and documentation for using named define without named-register extra
-        System.register(amdRegister[0], amdRegister[1]);
-    } else
+        console.warn(
+          process.env.SYSTEM_PRODUCTION
+            ? errMsg('W6')
+            : errMsg(
+                'W6',
+                'Include named-register.js for full named define support',
+              ),
+        );
+      // TODO: create new warning number and documentation for using named define without named-register extra
       System.register(amdRegister[0], amdRegister[1]);
+    } else System.register(amdRegister[0], amdRegister[1]);
   };
   global.define.amd = {};
 })(typeof self !== 'undefined' ? self : global);
