@@ -18,26 +18,30 @@ const appendImportMap = function (moduleId, src) {
 };
 
 const importAfterImportMap = function (id) {
-  return new Promise(function (resolve) { setTimeout(resolve, 10); }).then(function () {
+  return new Promise(function (resolve) {
+    setTimeout(resolve, 10);
+  }).then(function () {
     return System.import(id);
   });
 };
 
 const importNonExistent = function (id) {
   return System.import(id)
-  .catch(function (err) { return err })
-  .then(function (result) {
-    if (!(result instanceof Error)) {
-      throw new Error('Unexpected mapping found for module "' + id + '"');
-    }
-  });
-}
+    .catch(function (err) {
+      return err;
+    })
+    .then(function (result) {
+      if (!(result instanceof Error)) {
+        throw new Error('Unexpected mapping found for module "' + id + '"');
+      }
+    });
+};
 
 let container;
 
 suite('Dynamic import maps', function () {
   suiteSetup(function () {
-    return System.import('../../dist/extras/dynamic-import-maps.js')
+    return System.import('../../dist/extras/dynamic-import-maps.js');
   });
 
   setup(function () {
@@ -52,8 +56,7 @@ suite('Dynamic import maps', function () {
 
   test('Loading newly added elements (inline)', function () {
     const moduleId = 'dynamic-inline-map-1';
-    return importNonExistent(moduleId)
-    .then(function () {
+    return importNonExistent(moduleId).then(function () {
       appendImportMap(moduleId);
       return importAfterImportMap(moduleId);
     });
@@ -61,8 +64,7 @@ suite('Dynamic import maps', function () {
 
   test('Loading newly added elements (external)', function () {
     const moduleId = 'dynamic-external-map-1';
-    return importNonExistent(moduleId)
-    .then(function () {
+    return importNonExistent(moduleId).then(function () {
       appendImportMap(null, 'fixtures/browser/dynamic-importmap1.json');
       return importAfterImportMap(moduleId);
     });
@@ -70,13 +72,12 @@ suite('Dynamic import maps', function () {
 
   test('Loading manually added import map', function () {
     const moduleId = 'manual-map-1';
-    return importNonExistent(moduleId)
-    .then(function () {
+    return importNonExistent(moduleId).then(function () {
       System.addImportMap({
-        "imports": {
-          [moduleId]: "./fixtures/browser/esm.js"
-        }
-      })
+        imports: {
+          [moduleId]: './fixtures/browser/esm.js',
+        },
+      });
       return importAfterImportMap(moduleId);
     });
   });

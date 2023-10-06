@@ -1,8 +1,8 @@
-suite('Transform Loader', function() {
+suite('Transform Loader', function () {
   let translateCnt = 0;
 
-  suiteSetup(function() {
-    return System.import('../../dist/extras/transform.js').then(function() {
+  suiteSetup(function () {
+    return System.import('../../dist/extras/transform.js').then(function () {
       System = new System.constructor();
       System.transform = function (url, source) {
         translateCnt++;
@@ -11,15 +11,17 @@ suite('Transform Loader', function() {
     });
   });
 
-  const supportsWebAssembly = typeof WebAssembly !== 'undefined' && typeof process === 'undefined';
+  const supportsWebAssembly =
+    typeof WebAssembly !== 'undefined' && typeof process === 'undefined';
 
   suite('SystemJS standard tests', function () {
-
     test('String encoding', function () {
-      return System.import('./fixtures/browser/string-encoding.js').then(function (m) {
-        assert.equal(m.pi, decodeURI('%CF%80'));
-        assert.equal(m.emoji, decodeURI('%F0%9F%90%B6'));
-      });
+      return System.import('./fixtures/browser/string-encoding.js').then(
+        function (m) {
+          assert.equal(m.pi, decodeURI('%CF%80'));
+          assert.equal(m.emoji, decodeURI('%F0%9F%90%B6'));
+        },
+      );
     });
 
     test('Package maps', function () {
@@ -30,7 +32,7 @@ suite('Transform Loader', function() {
         System.resolve('b/c'),
         System.resolve('b.js'),
         System.resolve('b.js/c'),
-        System.resolve('g/x')
+        System.resolve('g/x'),
       ]).then(function (a) {
         assert.equal(a[0], rootURL + 'b');
         assert.equal(a[1], 'a:');
@@ -43,20 +45,19 @@ suite('Transform Loader', function() {
     });
 
     test('Contextual package maps', function () {
-      return System.import('fixtures/scope-test/index.js')
-      .then(function (m) {
+      return System.import('fixtures/scope-test/index.js').then(function (m) {
         assert.equal(m.mapdep, 'mapdep');
       });
     });
 
     test('Loading named System.register fails', function () {
       return System.import('fixtures/named-register.js')
-      .then(function () {
-        assert.fail('Should fail');
-      })
-      .catch(function (err) {
-        assert.ok(err);
-      });
+        .then(function () {
+          assert.fail('Should fail');
+        })
+        .catch(function (err) {
+          assert.ok(err);
+        });
     });
 
     test('Global script loading', function () {
@@ -66,21 +67,21 @@ suite('Transform Loader', function() {
     });
 
     test('Contextual dynamic import', function () {
-      return System.import('fixtures/dynamic-import-register.js').then(function (m) {
-        return m.lazy();
-      })
-      .then(function (lazyValue) {
-        assert.equal(lazyValue, 5);
-      });
+      return System.import('fixtures/dynamic-import-register.js')
+        .then(function (m) {
+          return m.lazy();
+        })
+        .then(function (lazyValue) {
+          assert.equal(lazyValue, 5);
+        });
     });
 
     if (supportsWebAssembly)
-    test('Loading WASM', function () {
-      return System.import('fixtures/wasm/example.wasm')
-      .then(function (m) {
-        assert.equal(m.exampleExport(1), 2);
+      test('Loading WASM', function () {
+        return System.import('fixtures/wasm/example.wasm').then(function (m) {
+          assert.equal(m.exampleExport(1), 2);
+        });
       });
-    });
 
     test('Verification', function () {
       const expected = supportsWebAssembly ? 8 : 7;
