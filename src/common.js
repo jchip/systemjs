@@ -7,6 +7,7 @@ export var hasDocument = typeof document !== 'undefined';
 var envGlobal = hasSelf ? self : global;
 export { envGlobal as global };
 
+export var REGISTRY = hasSymbol ? Symbol() : '@';
 // Loader-scoped baseUrl and import map supported in Node.js only
 export var BASE_URL = hasSymbol ? Symbol() : '_';
 export var IMPORT_MAP = hasSymbol ? Symbol() : '#';

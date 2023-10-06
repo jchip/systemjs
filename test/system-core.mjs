@@ -1,9 +1,8 @@
 import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
-import { resolveIfNotPlainOrUrl, IMPORT_MAP } from '../src/common.js';
+import { resolveIfNotPlainOrUrl, IMPORT_MAP, REGISTRY } from '../src/common.js';
 import '../src/features/registry.js';
-import { REGISTRY } from '../src/system-core.js';
 import '../src/features/resolve.js';
 
 const SystemLoader = System.constructor;

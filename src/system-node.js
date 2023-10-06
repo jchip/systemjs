@@ -4,12 +4,13 @@ import './features/fetch-load.js';
 import './features/node-fetch.js';
 import './extras/global.js';
 
-import { REGISTRY, systemJSPrototype } from './system-core.js';
+import { systemJSPrototype } from './system-core.js';
 import {
   BASE_URL,
   baseUrl,
   resolveAndComposeImportMap,
   IMPORT_MAP,
+  REGISTRY,
 } from './common.js';
 
 export const System = global.System;

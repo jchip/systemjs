@@ -14,12 +14,11 @@
  * Core comes with no System.prototype.resolve or
  * System.prototype.instantiate implementations
  */
-import { global, hasSymbol } from './common.js';
+import { global, hasSymbol, REGISTRY } from './common.js';
 import { errMsg } from './err-msg.js';
-export { systemJSPrototype, REGISTRY };
+export { systemJSPrototype };
 
 var toStringTag = hasSymbol && Symbol.toStringTag;
-var REGISTRY = hasSymbol ? Symbol() : '@';
 
 function SystemJS() {
   this[REGISTRY] = {};
