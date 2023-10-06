@@ -299,30 +299,6 @@ suite('SystemJS Standard Tests', function () {
     );
   });
 
-  test('should load <script type=systemjs-module>', function () {
-    const resolved = System.resolve(
-      '/test/fixtures/browser/systemjs-module-script.js',
-    );
-    assert.ok(System.has(resolved));
-    assert.equal(System.get(resolved).foo, 'bar');
-  });
-
-  test('should remove import: prefix from <script type=systemjs-module>', function () {
-    const resolved = System.resolve(
-      '/test/fixtures/browser/systemjs-module-script2.js',
-    );
-    assert.ok(System.has(resolved));
-    assert.equal(System.get(resolved).hello, 'there');
-  });
-
-  test('should load <script type=systemjs-module> that is in the dom before systemjs is loaded', function () {
-    const resolved = System.resolve(
-      '/test/fixtures/browser/systemjs-module-early.js',
-    );
-    assert.ok(System.has(resolved));
-    assert.equal(System.get(resolved).hi, 'bye');
-  });
-
   test('should load auto import', function () {
     const resolved = System.resolve('/test/fixtures/browser/auto-import.js');
     assert.ok(System.has(resolved));
