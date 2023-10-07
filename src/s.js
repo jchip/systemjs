@@ -4,3 +4,4 @@ import './features/resolve.js';
 import './features/import-maps.js';
 import './features/depcache.js';
 import './features/worker-load.js';
+import './features/registry.js';

@@ -14,7 +14,7 @@
  * Core comes with no System.prototype.resolve or
  * System.prototype.instantiate implementations
  */
-import { global, hasSymbol, REGISTRY } from './common.js';
+import { global, hasDocument, hasSymbol, REGISTRY } from './common.js';
 import { errMsg } from './err-msg.js';
 export { systemJSPrototype };
 
@@ -22,32 +22,39 @@ var toStringTag = hasSymbol && Symbol.toStringTag;
 
 function SystemJS() {
   this[REGISTRY] = {};
+  this.namedStore = {};
+  this.pendingImport = [];
 }
 
 var systemJSPrototype = SystemJS.prototype;
 
 systemJSPrototype.import = function (id, parentUrl, meta) {
-  var loader = this;
-  parentUrl &&
-    typeof parentUrl === 'object' &&
-    ((meta = parentUrl), (parentUrl = undefined));
-  return Promise.resolve(loader.prepareImport())
+  var _this = this;
+  if (parentUrl && typeof parentUrl === 'object') {
+    meta = parentUrl;
+    parentUrl = undefined;
+  }
+  return Promise.resolve(_this.prepareImport())
     .then(function () {
-      return loader.resolve(id, parentUrl, meta);
+      return _this.resolve(id, parentUrl, meta);
     })
     .then(function (id) {
-      var load = getOrCreateLoad(loader, id, undefined, meta);
-      return load.C || topLevelLoad(loader, load);
+      console.log('getOrCreateLoad', id);
+      if (_this.namedStore[id]) {
+        return Promise.resolve(_this.namedStore[id]);
+      }
+      var load = getOrCreateLoad(_this, id, undefined, meta);
+      return load.C || topLevelLoad(_this, load);
     });
 };
 
 // Hookable createContext function -> allowing eg custom import meta
 systemJSPrototype.createContext = function (parentId) {
-  var loader = this;
+  var _this = this;
   return {
     url: parentId,
     resolve: function (id, parentUrl) {
-      return Promise.resolve(loader.resolve(id, parentUrl || parentId));
+      return Promise.resolve(_this.resolve(id, parentUrl || parentId));
     },
   };
 };
@@ -63,8 +70,14 @@ function triggerOnload(loader, load, err, isErrSource) {
 }
 
 var lastRegister = [];
-systemJSPrototype.register = function (deps, declare, metas) {
-  lastRegister.push([deps, declare, metas]);
+systemJSPrototype.register = function (name, deps, declare_, metas) {
+  var cs = hasDocument && document.currentScript;
+  var url = (metas && metas.url) || (cs && cs.src);
+  lastRegister.push(
+    typeof name !== 'string'
+      ? [name, deps, declare_, undefined, url]
+      : [deps, declare_, metas, name, url],
+  );
 };
 
 /*
@@ -81,11 +94,15 @@ systemJSPrototype.getRegister = function () {
 
 export function getOrCreateLoad(loader, id, firstParentUrl, meta) {
   var load = loader[REGISTRY][id];
-  if (load) return load;
+  if (load) {
+    return load;
+  }
 
   var importerSetters = [];
   var ns = Object.create(null);
-  if (toStringTag) Object.defineProperty(ns, toStringTag, { value: 'Module' });
+  if (toStringTag) {
+    Object.defineProperty(ns, toStringTag, { value: 'Module' });
+  }
 
   var instantiatePromise = Promise.resolve()
     .then(function () {
@@ -177,7 +194,10 @@ export function getOrCreateLoad(loader, id, firstParentUrl, meta) {
       load.d = depLoads;
     });
   });
-  if (!process.env.SYSTEM_BROWSER) linkPromise.catch(function () {});
+
+  if (!process.env.SYSTEM_BROWSER) {
+    linkPromise.catch(function () {});
+  }
 
   // Capital letter = a promise function
   return (load = loader[REGISTRY][id] =

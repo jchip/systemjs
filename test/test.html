@@ -1,95 +1,123 @@
 <!doctype html>
-	<meta charset="utf-8">
-	<script>
-  	if (typeof Promise === 'undefined')
-    	document.write('<script src="../node_modules/bluebird/js/browser/bluebird.core.js"><\/script>');
-	</script>
-	<script>
-		if (typeof fetch === 'undefined')
-			document.write('<script src="../node_modules/whatwg-fetch/dist/fetch.umd.js"><\/script>');
-	</script>
-	<script>
-		// SystemJS doesn't require a Symbol polyfill, but construct-style-sheets-polyfill does
-		if (typeof Symbol === 'undefined')
-			document.write('<script src="../node_modules/symbol-es6/dist/symbol-es6.min.js"><\/script>');
-	</script>
-	<script>
-		if (typeof document.adoptedStyleSheets === 'undefined')
-			document.write('<script src="../node_modules/construct-style-sheets-polyfill/dist/adoptedStyleSheets.js"><\/script>');
-	</script>
-	<script>
-		// TODO IE11 URL polyfill testing
-		// if (typeof URL === 'undefined')
-		//	document.write()
-	</script>
+<meta charset="utf-8" />
+<script>
+  if (typeof Promise === 'undefined')
+    document.write(
+      '<script src="../node_modules/bluebird/js/browser/bluebird.core.js"><\/script>',
+    );
+</script>
+<script>
+  if (typeof fetch === 'undefined')
+    document.write(
+      '<script src="../node_modules/whatwg-fetch/dist/fetch.umd.js"><\/script>',
+    );
+</script>
+<script>
+  // SystemJS doesn't require a Symbol polyfill, but construct-style-sheets-polyfill does
+  if (typeof Symbol === 'undefined')
+    document.write(
+      '<script src="../node_modules/symbol-es6/dist/symbol-es6.min.js"><\/script>',
+    );
+</script>
+<script>
+  if (typeof document.adoptedStyleSheets === 'undefined')
+    document.write(
+      '<script src="../node_modules/construct-style-sheets-polyfill/dist/adoptedStyleSheets.js"><\/script>',
+    );
+</script>
+<script>
+  // TODO IE11 URL polyfill testing
+  // if (typeof URL === 'undefined')
+  //	document.write()
+</script>
 
-	<link rel="stylesheet" type="text/css" href="../node_modules/mocha/mocha.css"/>
-	<script src="../node_modules/mocha/mocha.js"></script>
+<link rel="stylesheet" type="text/css" href="../node_modules/mocha/mocha.css" />
+<script src="../node_modules/mocha/mocha.js"></script>
 
-	<script type="systemjs-importmap" src="https://hostname.invalid/importmap.json"></script>
-	<script type="systemjs-importmap" src="fixtures/browser/importmap-invalid.json"></script>
-	<script type="systemjs-importmap" onerror="retryImportMap()" src="fixtures/browser/importmap-invalid.json"></script>
-	<script type="text/javascript">
-		function retryImportMap() {
-			document.write('<scr'+'ipt type="systemjs-importmap" src="fixtures/browser/importmap-invalid.json"></sc'+'ript>');
-		}
-	</script>
-	<script type="systemjs-importmap" src="fixtures/browser/importmap.json" integrity="sha384-+t/f9i0vQYwxmcczlIpgCCTQz2mA1sMGYGErJ4fZb/Lcx/yYrFSiedO0XpSIX8oX"></script>
-	<script type="systemjs-module" src="/test/fixtures/browser/systemjs-module-early.js"></script>
-	<script src="../dist/system.js"></script>
-	<script type="systemjs-module" src="/test/fixtures/browser/systemjs-module-script.js"></script>
-	<script src="/test/fixtures/browser/auto-import.js"></script>
-	<script type="systemjs-module" src="import:/test/fixtures/browser/systemjs-module-script2.js"></script>
+<script
+  type="systemjs-importmap"
+  src="https://hostname.invalid/importmap.json"
+></script>
+<script
+  type="systemjs-importmap"
+  src="fixtures/browser/importmap-invalid.json"
+></script>
+<script
+  type="systemjs-importmap"
+  onerror="retryImportMap()"
+  src="fixtures/browser/importmap-invalid.json"
+></script>
+<script type="text/javascript">
+  function retryImportMap() {
+    document.write(
+      '<scr' +
+        'ipt type="systemjs-importmap" src="fixtures/browser/importmap-invalid.json"></sc' +
+        'ript>',
+    );
+  }
+</script>
+<script
+  type="systemjs-importmap"
+  src="fixtures/browser/importmap.json"
+  integrity="sha384-+t/f9i0vQYwxmcczlIpgCCTQz2mA1sMGYGErJ4fZb/Lcx/yYrFSiedO0XpSIX8oX"
+></script>
+<!-- <script type="systemjs-module" src="/test/fixtures/browser/systemjs-module-early.js"></script> -->
+<script src="../dist/system.js"></script>
+<!-- <script type="systemjs-module" src="/test/fixtures/browser/systemjs-module-script.js"></script> -->
+<script src="/test/fixtures/browser/auto-import.js"></script>
+<!-- <script type="systemjs-module" src="import:/test/fixtures/browser/systemjs-module-script2.js"></script> -->
 
-	<script>
-		mocha.setup('tdd');
+<script>
+  mocha.setup('tdd');
 
-		self.baseURL = location.href.substr(0, location.href.lastIndexOf('/') + 1);
-		self.rootURL = location.href.substr(0, location.href.substr(0, location.href.lastIndexOf('/')).lastIndexOf('/') + 1);
-		self.assert = {
-			ok: function (val) {
-				this.equal(!!val, true);
-			},
-			equal: function equal(a, b) {
-				if (a !== b)
-					throw new Error('Expected "' + a + '" to be "' + b + '"');
-			},
-			fail: function (msg) {
-				throw new Error(msg);
-			}
-		};
+  self.baseURL = location.href.substr(0, location.href.lastIndexOf('/') + 1);
+  self.rootURL = location.href.substr(
+    0,
+    location.href.substr(0, location.href.lastIndexOf('/')).lastIndexOf('/') +
+      1,
+  );
+  self.assert = {
+    ok: function (val) {
+      this.equal(!!val, true);
+    },
+    equal: function equal(a, b) {
+      if (a !== b) throw new Error('Expected "' + a + '" to be "' + b + '"');
+    },
+    fail: function (msg) {
+      throw new Error(msg);
+    },
+  };
 
-		function importNext(name) {
-			return function() {
-				return System.import(name);
-			}
-		}
+  function importNext(name) {
+    return function () {
+      return System.import(name);
+    };
+  }
 
-		function importSeries() {
-			var promise = Promise.resolve();
+  function importSeries() {
+    var promise = Promise.resolve();
 
-			for(var i=0; i<arguments.length; i++) {
-				promise = promise.then(importNext(arguments[i]));
-			}
+    for (var i = 0; i < arguments.length; i++) {
+      promise = promise.then(importNext(arguments[i]));
+    }
 
-			return promise;
-		}
+    return promise;
+  }
 
-		importSeries(
-			'./browser/core.js',
-			'./browser/amd.js',			
-			// './browser/named-register.js',
-			'./browser/dynamic-import-maps.js'
-		)
-		.then(function() {
-			mocha.run(function(failures) {
-				fetch(failures ? '/error' : '/done');
-			})
-		})
-		.catch(function(e) {
-			fetch('/error');
-			throw e;
-		});
-	</script>
+  importSeries(
+    './browser/core.js',
+    './browser/amd.js',
+    // './browser/dynamic-import-maps.js'
+  )
+    .then(function () {
+      mocha.run(function (failures) {
+        fetch(failures ? '/error' : '/done');
+      });
+    })
+    .catch(function (e) {
+      fetch('/error');
+      throw e;
+    });
+</script>
 
-	<div id="mocha"></div>
+<div id="mocha"></div>

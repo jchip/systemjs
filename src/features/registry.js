@@ -12,6 +12,13 @@ systemJSPrototype.get = function (id) {
   }
 };
 
+systemJSPrototype.alias = function (alias, id) {
+  var load = this[REGISTRY][id];
+  if (load && !this[REGISTRY][alias]) {
+    return (this[REGISTRY][alias] = load);
+  }
+};
+
 systemJSPrototype.set = function (id, module) {
   if (!process.env.SYSTEM_PRODUCTION) {
     try {
@@ -39,26 +46,24 @@ systemJSPrototype.set = function (id, module) {
 
   var done = Promise.resolve(ns);
 
-  var load =
-    this[REGISTRY][id] ||
-    (this[REGISTRY][id] = {
-      id: id,
-      i: [],
-      h: false,
-      d: [],
-      e: null,
-      er: undefined,
-      E: undefined,
-    });
+  var load = this[REGISTRY][id];
 
-  if (load.e || load.E) return false;
+  if (load && (load.e || load.E)) return false;
 
-  Object.assign(load, {
+  this[REGISTRY][id] = {
+    id: id,
+    i: [],
+    h: false,
+    d: [],
+    e: null,
+    er: undefined,
+    E: undefined,
     n: ns,
     I: undefined,
     L: undefined,
     C: done,
-  });
+  };
+
   return ns;
 };
 

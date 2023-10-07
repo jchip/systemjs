@@ -1,4 +1,6 @@
 /*
+ * src/features/import-maps.js 
+ *
  * SystemJS browser attachments for script and import map processing
  */
 import {

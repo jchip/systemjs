@@ -9,6 +9,8 @@ import { importMap } from './import-maps.js';
 import { systemJSPrototype } from '../system-core.js';
 import { errMsg } from '../err-msg.js';
 
+/** src/features/resolve.js */
+
 systemJSPrototype.resolve = function (id, parentUrl) {
   parentUrl =
     parentUrl || (!process.env.SYSTEM_BROWSER && this[BASE_URL]) || baseUrl;

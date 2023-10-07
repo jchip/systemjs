@@ -1,3 +1,0 @@
-System.register('asdf', [], function () {
-
-});
