@@ -62,18 +62,21 @@ function triggerOnload(loader, load, err, isErrSource) {
   if (err) throw err;
 }
 
-var lastRegister;
+var lastRegister = [];
 systemJSPrototype.register = function (deps, declare, metas) {
-  lastRegister = [deps, declare, metas];
+  lastRegister.push([deps, declare, metas]);
 };
 
 /*
  * getRegister provides the last anonymous System.register call
  */
 systemJSPrototype.getRegister = function () {
-  var _lastRegister = lastRegister;
-  lastRegister = undefined;
-  return _lastRegister;
+  var len = lastRegister.length;
+  if (len > 0) {
+    var _lastRegister = lastRegister;
+    lastRegister = [];
+    return _lastRegister[len - 1];
+  }
 };
 
 export function getOrCreateLoad(loader, id, firstParentUrl, meta) {
