@@ -16,7 +16,9 @@ export let baseUrl: string | string[];
 
 if (hasDocument) {
   const baseEl: HTMLAnchorElement = document.querySelector('base[href]');
-  if (baseEl) baseUrl = baseEl.href;
+  if (baseEl) {
+    baseUrl = baseEl.href;
+  }
 }
 
 if (!baseUrl && typeof location !== 'undefined') {
@@ -25,7 +27,7 @@ if (!baseUrl && typeof location !== 'undefined') {
   if (lastSepIndex !== -1) baseUrl = baseUrl.slice(0, lastSepIndex + 1);
 }
 
-if (!process.env.SYSTEM_BROWSER && !baseUrl && typeof process !== 'undefined') {
+if (!baseUrl && typeof process !== 'undefined' && !process.env.SYSTEM_BROWSER) {
   const cwd = process.cwd();
   // TODO: encoding edge cases
   baseUrl = 'file://' + (cwd[0] === '/' ? '' : '/') + cwd.replace(/\\/g, '/') + '/';

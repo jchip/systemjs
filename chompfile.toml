@@ -11,12 +11,18 @@ extensions = [
 ]
 
 [[task]]
+name = 'tsc'
+deps = ['src/##.ts']
+run = 'tsc'
+target = 'lib/##.js'
+
+[[task]]
 name = 'build'
 deps = ['dist/system.js', 'dist/system.min.js', 'dist/s.js', 'dist/s.min.js', 'dist/system-node.cjs', 'dist/extras/*.js']
 
 [[task]]
 target = 'dist/system.js'
-deps = ['src/system.js', 'src/system-core.js', 'src/common.js', 'src/err-msg.js', 'src/features/*.js']
+deps = ['lib/system.js', 'lib/system-core.js', 'lib/common.js', 'lib/err-msg.js', 'lib/features/*.js']
 template = 'rollup'
 [task.template-options]
 onwarn = false
@@ -33,7 +39,7 @@ package = '@rollup/plugin-replace'
 
 [[task]]
 target = 'dist/s.js'
-deps = ['src/s.js', 'src/system-core.js', 'src/common.js', 'src/err-msg.js', 'src/features/*.js']
+deps = ['lib/s.js', 'lib/system-core.js', 'lib/common.js', 'lib/err-msg.js', 'lib/features/*.js']
 template = 'rollup'
 [task.template-options]
 onwarn = false
@@ -49,7 +55,7 @@ package = '@rollup/plugin-replace'
 "process.env.SYSTEM_BROWSER" = 'true'
 
 [[task]]
-deps = ['src/extras/#.js', 'src/common.js', 'src/err-msg.js', 'src/features/*.js']
+deps = ['lib/extras/#.js', 'lib/common.js', 'lib/err-msg.js', 'lib/features/*.js']
 target = 'dist/extras/#.js'
 template = 'rollup'
 [task.template-options]
@@ -85,7 +91,7 @@ unsafe = true
 
 [[task]]
 target = 'dist/system-node.cjs'
-deps = ['src/system-node.js', 'package.json', 'src/system-core.js', 'src/common.js', 'src/err-msg.js', 'src/features/*.js']
+deps = ['lib/system-node.js', 'package.json', 'lib/system-core.js', 'lib/common.js', 'lib/err-msg.js', 'lib/features/*.js']
 template = 'ncc'
 [task.template-options]
 assets = false

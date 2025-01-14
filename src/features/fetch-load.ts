@@ -8,19 +8,27 @@ import { systemJSPrototype } from '../system-core.js';
 systemJSPrototype.shouldFetch = function () {
   return false;
 };
-if (typeof fetch !== 'undefined') systemJSPrototype.fetch = fetch;
 
-var instantiate = systemJSPrototype.instantiate;
-var jsContentTypeRegEx = /^(text|application)\/(x-)?javascript(;|$)/;
+if (typeof fetch !== 'undefined') {
+  systemJSPrototype.fetch = fetch;
+}
+
+const instantiate = systemJSPrototype.instantiate;
+const jsContentTypeRegEx = /^(text|application)\/(x-)?javascript(;|$)/;
+
 systemJSPrototype.instantiate = function (url, parent, meta) {
-  var loader = this;
-  if (!this.shouldFetch(url, parent, meta)) return instantiate.apply(this, arguments);
+  const loader = this;
+
+  if (!this.shouldFetch(url, parent, meta)) {
+    return instantiate.apply(this, arguments);
+  }
+
   return this.fetch(url, {
     credentials: 'same-origin',
     integrity: importMap.integrity[url],
     meta: meta,
   }).then(function (res) {
-    if (!res.ok)
+    if (!res.ok) {
       throw Error(
         errMsg(
           7,
@@ -34,8 +42,10 @@ systemJSPrototype.instantiate = function (url, parent, meta) {
                 (parent ? ' from ' + parent : ''),
         ),
       );
-    var contentType = res.headers.get('content-type');
-    if (!contentType || !jsContentTypeRegEx.test(contentType))
+    }
+
+    const contentType = res.headers.get('content-type');
+    if (!contentType || !jsContentTypeRegEx.test(contentType)) {
       throw Error(
         errMsg(
           4,
@@ -48,6 +58,8 @@ systemJSPrototype.instantiate = function (url, parent, meta) {
                 (parent ? ' from ' + parent : ''),
         ),
       );
+    }
+
     return res.text().then(function (source) {
       if (source.indexOf('//# sourceURL=') < 0) source += '\n//# sourceURL=' + url;
       (0, eval)(source);

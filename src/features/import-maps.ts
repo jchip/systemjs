@@ -29,75 +29,83 @@ systemJSPrototype.addImportMap = function (newMap, mapBase) {
   resolveAndComposeImportMap(newMap, mapBase || baseUrl, importMap);
 };
 
+declare const System: any;
+
 function processScripts() {
-  [].forEach.call(document.querySelectorAll('script'), function (script) {
-    if (script.sp)
-      // sp marker = systemjs processed
-      return;
-    // TODO: deprecate systemjs-module in next major now that we have auto import
-    // if (script.type === 'systemjs-module') {
-    //   script.sp = true;
-    //   if (!script.src) return;
-    //   System.import(
-    //     script.src.slice(0, 7) === 'import:'
-    //       ? script.src.slice(7)
-    //       : resolveUrl(script.src, baseUrl)
-    //   ).catch(function (e) {
-    //     // if there is a script load error, dispatch an "error" event
-    //     // on the script tag.
-    //     if (
-    //       e.message.indexOf(
-    //         'https://github.com/systemjs/systemjs/blob/main/docs/errors.md#3'
-    //       ) > -1
-    //     ) {
-    //       var event = document.createEvent('Event');
-    //       event.initEvent('error', false, false);
-    //       script.dispatchEvent(event);
-    //     }
-    //     return Promise.reject(e);
-    //   });
-    // } else
-    if (script.type === 'systemjs-importmap') {
-      script.sp = true;
-      // The passThrough property is for letting the module types fetch implementation know that this is not a SystemJS module.
-      var fetchPromise = script.src
-        ? (System.fetch || fetch)(script.src, {
-            integrity: script.integrity,
-            passThrough: true,
+  [].forEach.call(
+    document.querySelectorAll('script'),
+    function (script: HTMLScriptElement & { sp: boolean }) {
+      if (script.sp) {
+        // sp marker = systemjs processed
+        return;
+      }
+      // TODO: deprecate systemjs-module in next major now that we have auto import
+      // if (script.type === 'systemjs-module') {
+      //   script.sp = true;
+      //   if (!script.src) return;
+      //   System.import(
+      //     script.src.slice(0, 7) === 'import:'
+      //       ? script.src.slice(7)
+      //       : resolveUrl(script.src, baseUrl)
+      //   ).catch(function (e) {
+      //     // if there is a script load error, dispatch an "error" event
+      //     // on the script tag.
+      //     if (
+      //       e.message.indexOf(
+      //         'https://github.com/systemjs/systemjs/blob/main/docs/errors.md#3'
+      //       ) > -1
+      //     ) {
+      //       var event = document.createEvent('Event');
+      //       event.initEvent('error', false, false);
+      //       script.dispatchEvent(event);
+      //     }
+      //     return Promise.reject(e);
+      //   });
+      // } else
+      if (script.type === 'systemjs-importmap') {
+        script.sp = true;
+        // The passThrough property is for letting the module types fetch implementation know that this is not a SystemJS module.
+        var fetchPromise = script.src
+          ? (System.fetch || fetch)(script.src, {
+              integrity: script.integrity,
+              passThrough: true,
+            })
+              .then(function (res) {
+                if (!res.ok)
+                  throw Error(
+                    process.env.SYSTEM_PRODUCTION
+                      ? res.status
+                      : 'Invalid status code: ' + res.status,
+                  );
+                return res.text();
+              })
+              .catch(function (err) {
+                err.message =
+                  errMsg(
+                    'W4',
+                    process.env.SYSTEM_PRODUCTION
+                      ? script.src
+                      : 'Error fetching systemjs-import map ' + script.src,
+                  ) +
+                  '\n' +
+                  err.message;
+                console.warn(err);
+                if (typeof script.onerror === 'function') {
+                  script.onerror(err.message);
+                }
+                return '{}';
+              })
+          : script.innerHTML;
+        importMapPromise = importMapPromise
+          .then(function () {
+            return fetchPromise;
           })
-            .then(function (res) {
-              if (!res.ok)
-                throw Error(
-                  process.env.SYSTEM_PRODUCTION ? res.status : 'Invalid status code: ' + res.status,
-                );
-              return res.text();
-            })
-            .catch(function (err) {
-              err.message =
-                errMsg(
-                  'W4',
-                  process.env.SYSTEM_PRODUCTION
-                    ? script.src
-                    : 'Error fetching systemjs-import map ' + script.src,
-                ) +
-                '\n' +
-                err.message;
-              console.warn(err);
-              if (typeof script.onerror === 'function') {
-                script.onerror();
-              }
-              return '{}';
-            })
-        : script.innerHTML;
-      importMapPromise = importMapPromise
-        .then(function () {
-          return fetchPromise;
-        })
-        .then(function (text) {
-          extendImportMap(importMap, text, script.src || baseUrl);
-        });
-    }
-  });
+          .then(function (text) {
+            extendImportMap(importMap, text, script.src || baseUrl);
+          });
+      }
+    },
+  );
 }
 
 function extendImportMap(importMap, newMapText, newMapUrl) {

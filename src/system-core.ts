@@ -18,30 +18,30 @@ import { global, hasSymbol, REGISTRY } from './common.js';
 import { errMsg } from './err-msg.js';
 export { systemJSPrototype };
 
-var toStringTag = hasSymbol && Symbol.toStringTag;
+const toStringTag = hasSymbol && Symbol.toStringTag;
 
 function SystemJS() {
   this[REGISTRY] = {};
 }
 
-var systemJSPrototype = SystemJS.prototype;
+const systemJSPrototype = SystemJS.prototype;
 
 systemJSPrototype.import = function (id, parentUrl, meta) {
-  var loader = this;
+  const loader = this;
   parentUrl && typeof parentUrl === 'object' && ((meta = parentUrl), (parentUrl = undefined));
   return Promise.resolve(loader.prepareImport())
     .then(function () {
       return loader.resolve(id, parentUrl, meta);
     })
     .then(function (id) {
-      var load = getOrCreateLoad(loader, id, undefined, meta);
+      const load = getOrCreateLoad(loader, id, undefined, meta);
       return load.C || topLevelLoad(loader, load);
     });
 };
 
 // Hookable createContext function -> allowing eg custom import meta
 systemJSPrototype.createContext = function (parentId) {
-  var loader = this;
+  const loader = this;
   return {
     url: parentId,
     resolve: function (id, parentUrl) {
@@ -60,7 +60,7 @@ function triggerOnload(loader, load, err, isErrSource) {
   if (err) throw err;
 }
 
-var lastRegister = [];
+let lastRegister = [];
 systemJSPrototype.register = function (deps, declare, metas) {
   lastRegister.push([deps, declare, metas]);
 };
@@ -69,23 +69,28 @@ systemJSPrototype.register = function (deps, declare, metas) {
  * getRegister provides the last anonymous System.register call
  */
 systemJSPrototype.getRegister = function () {
-  var len = lastRegister.length;
+  const len = lastRegister.length;
   if (len > 0) {
-    var _lastRegister = lastRegister;
+    const _lastRegister = lastRegister;
     lastRegister = [];
     return _lastRegister[len - 1];
   }
 };
 
 export function getOrCreateLoad(loader, id, firstParentUrl, meta?) {
-  var load = loader[REGISTRY][id];
-  if (load) return load;
+  let load = loader[REGISTRY][id];
+  if (load) {
+    return load;
+  }
 
-  var importerSetters = [];
-  var ns = Object.create(null);
-  if (toStringTag) Object.defineProperty(ns, toStringTag, { value: 'Module' });
+  const importerSetters = [];
+  const ns = Object.create(null);
 
-  var instantiatePromise = Promise.resolve()
+  if (toStringTag) {
+    Object.defineProperty(ns, toStringTag, { value: 'Module' });
+  }
+
+  const instantiatePromise = Promise.resolve()
     .then(function () {
       return loader.instantiate(id, firstParentUrl, meta);
     })
@@ -98,15 +103,15 @@ export function getOrCreateLoad(loader, id, firstParentUrl, meta?) {
         function _export(name, value) {
           // note if we have hoisted exports (including reexports)
           load.h = true;
-          var changed = false;
+          let changed = false;
           if (typeof name === 'string') {
             if (!(name in ns) || ns[name] !== value) {
               ns[name] = value;
               changed = true;
             }
           } else {
-            for (var p in name) {
-              var value = name[p];
+            for (const p in name) {
+              const value = name[p];
               if (!(p in ns) || ns[p] !== value) {
                 ns[p] = value;
                 changed = true;
@@ -118,13 +123,13 @@ export function getOrCreateLoad(loader, id, firstParentUrl, meta?) {
             }
           }
           if (changed)
-            for (var i = 0; i < importerSetters.length; i++) {
-              var setter = importerSetters[i];
+            for (let i = 0; i < importerSetters.length; i++) {
+              const setter = importerSetters[i];
               if (setter) setter(ns);
             }
           return value;
         }
-        var declared = registration[1](
+        const declared = registration[1](
           _export,
           registration[1].length === 2
             ? {
@@ -146,13 +151,13 @@ export function getOrCreateLoad(loader, id, firstParentUrl, meta?) {
       },
     );
 
-  var linkPromise = instantiatePromise.then(function (instantiation) {
+  const linkPromise = instantiatePromise.then(function (instantiation) {
     return Promise.all(
       instantiation[0].map(function (dep, i) {
-        var setter = instantiation[1][i];
-        var meta = instantiation[2][i];
+        const setter = instantiation[1][i];
+        const meta = instantiation[2][i];
         return Promise.resolve(loader.resolve(dep, id)).then(function (depId) {
-          var depLoad = getOrCreateLoad(loader, depId, id, meta);
+          const depLoad = getOrCreateLoad(loader, depId, id, meta);
           // depLoad.I may be undefined for already-evaluated
           return Promise.resolve(depLoad.I).then(function () {
             if (setter) {
@@ -248,7 +253,7 @@ function topLevelLoad(loader, load) {
 }
 
 // the closest we can get to call(undefined)
-var nullContext = Object.freeze(Object.create(null));
+const nullContext = Object.freeze(Object.create(null));
 
 // returns a promise if and only if a top-level await subgraph
 // throws on sync errors
@@ -269,14 +274,14 @@ function postOrderExec(loader, load, seen) {
   // - If `load.er` is truthy, the execution has threw or has been rejected;
   // - otherwise, either the `load.E` is a promise, means it's under async execution, or
   // - the `load.E` is null, means the load has completed the execution or has been async resolved.
-  var exec = load.e;
+  const exec = load.e;
   load.e = null;
 
   // deps execute first, unless circular
-  var depLoadPromises;
+  let depLoadPromises: Promise<unknown>[];
   load.d.forEach(function (depLoad) {
     try {
-      var depLoadPromise = postOrderExec(loader, depLoad, seen);
+      const depLoadPromise = postOrderExec(loader, depLoad, seen);
       if (depLoadPromise) (depLoadPromises = depLoadPromises || []).push(depLoadPromise);
     } catch (err) {
       load.er = err;
@@ -290,7 +295,7 @@ function postOrderExec(loader, load, seen) {
 
   function doExec() {
     try {
-      var execPromise = exec.call(nullContext);
+      let execPromise = exec.call(nullContext);
       if (execPromise) {
         execPromise = execPromise.then(
           function () {

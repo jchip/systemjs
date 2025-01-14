@@ -8,7 +8,7 @@ declare const importScripts: any;
 
 if (hasSelf && typeof importScripts === 'function')
   systemJSPrototype.instantiate = function (url) {
-    var loader = this;
+    let loader = this;
     return Promise.resolve().then(function () {
       importScripts(url);
       return loader.getRegister(url);

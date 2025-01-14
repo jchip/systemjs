@@ -6,22 +6,26 @@ import { systemJSPrototype } from '../system-core.js';
 import { errMsg } from '../err-msg.js';
 import { importMap } from './import-maps.js';
 
+let baseOrigin: string = '';
+let lastWindowErrorUrl: string;
+let lastWindowError;
+
 if (hasDocument) {
   window.addEventListener('error', function (evt) {
     lastWindowErrorUrl = evt.filename;
     lastWindowError = evt.error;
   });
-  var baseOrigin = location.origin;
+  baseOrigin = location.origin;
 }
 
 systemJSPrototype.createScript = function (url) {
-  var script = document.createElement('script');
+  const script = document.createElement('script');
   script.async = true;
   // Only add cross origin for actual cross origin
   // this is because Safari triggers for all
   // - https://bugs.webkit.org/show_bug.cgi?id=171566
   if (url.indexOf(baseOrigin + '/')) script.crossOrigin = 'anonymous';
-  var integrity = importMap.integrity[url];
+  const integrity = importMap.integrity[url];
   if (integrity) script.integrity = integrity;
   script.src = url;
   return script;
@@ -31,7 +35,7 @@ systemJSPrototype.getCurrentScript = function () {
   if (hasDocument) {
     let lastScript: any = document.currentScript;
     if (!lastScript) {
-      var scripts = document.querySelectorAll('script[src]');
+      const scripts = document.querySelectorAll('script[src]');
       lastScript = scripts[scripts.length - 1];
     }
     return lastScript;
@@ -41,7 +45,7 @@ systemJSPrototype.getCurrentScript = function () {
 };
 
 // Auto imports -> script tags can be inlined directly for load phase
-var autoImports = {};
+const autoImports = {};
 function clearAutoImport(autoImport) {
   if (autoImport) {
     clearTimeout(autoImport.t);
@@ -49,13 +53,13 @@ function clearAutoImport(autoImport) {
   }
 }
 
-var systemRegister = systemJSPrototype.register;
+const systemRegister = systemJSPrototype.register;
 systemJSPrototype.register = function (deps, declare) {
   if (hasDocument && document.readyState === 'loading' && typeof deps !== 'string') {
-    var lastScript = this.getCurrentScript();
-    var src = lastScript && lastScript.src;
+    const lastScript = this.getCurrentScript();
+    const src = lastScript && lastScript.src;
     if (src && !autoImports[src]) {
-      var loader = this;
+      const loader = this;
       autoImports[src] = {
         s: src,
         // if this is already a System load, then the instantiate has already begun
@@ -70,14 +74,13 @@ systemJSPrototype.register = function (deps, declare) {
   return systemRegister.call(this, deps, declare);
 };
 
-var lastWindowErrorUrl, lastWindowError;
 systemJSPrototype.instantiate = function (url, firstParentUrl) {
-  var autoImport = autoImports[url];
+  const autoImport = autoImports[url];
   if (autoImport && autoImport.r) {
     clearAutoImport(autoImport);
     return autoImport.r;
   }
-  var loader = this;
+  const loader = this;
   return Promise.resolve(systemJSPrototype.createScript(url)).then(function (script) {
     return new Promise(function (resolve, reject) {
       script.addEventListener('error', function () {
