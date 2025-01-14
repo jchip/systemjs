@@ -4,9 +4,10 @@ import { promises as fs } from 'fs';
 import { fileURLToPath } from 'url';
 
 sourceMapSupport.install();
+const System: any = (global as any).System;
 
-global.System.constructor.prototype.shouldFetch = () => true;
-global.System.constructor.prototype.fetch = async (url) => {
+System.constructor.prototype.shouldFetch = () => true;
+System.constructor.prototype.fetch = async (url) => {
   if (url.startsWith('file:')) {
     try {
       const source = await fs.readFile(fileURLToPath(url.toString()));
@@ -18,9 +19,7 @@ global.System.constructor.prototype.fetch = async (url) => {
             if (headerName === 'content-type') {
               return 'application/javascript';
             } else {
-              throw Error(
-                `NodeJS fetch emulation doesn't support ${headerName} header`,
-              );
+              throw Error(`NodeJS fetch emulation doesn't support ${headerName} header`);
             }
           },
         },

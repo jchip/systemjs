@@ -3,12 +3,11 @@ import { errMsg } from '../err-msg.js';
 /*
  * Support for AMD loading
  */
-(function (global) {
+(function (global: any) {
+  const System: any = global.System;
   function unsupportedRequire() {
     throw Error(
-      process.env.SYSTEM_PRODUCTION
-        ? errMsg(5)
-        : errMsg(5, 'AMD require not supported.'),
+      process.env.SYSTEM_PRODUCTION ? errMsg(5) : errMsg(5, 'AMD require not supported.'),
     );
   }
 
@@ -90,9 +89,7 @@ import { errMsg } from '../err-msg.js';
       exec = depArg;
     } else {
       throw Error(
-        process.env.SYSTEM_PRODUCTION
-          ? errMsg(9)
-          : errMsg(9, 'Invalid call to AMD define()'),
+        process.env.SYSTEM_PRODUCTION ? errMsg(9) : errMsg(9, 'Invalid call to AMD define()'),
       );
     }
 
@@ -106,10 +103,7 @@ import { errMsg } from '../err-msg.js';
         console.warn(
           process.env.SYSTEM_PRODUCTION
             ? errMsg('W6')
-            : errMsg(
-                'W6',
-                'Include named-register.js for full named define support',
-              ),
+            : errMsg('W6', 'Include named-register.js for full named define support'),
         );
       // TODO: create new warning number and documentation for using named define without named-register extra
       System.register(amdRegister[0], amdRegister[1]);

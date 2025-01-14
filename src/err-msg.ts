@@ -1,4 +1,4 @@
-export function errMsg(errCode, msg) {
+export function errMsg(errCode: unknown, msg?: string): string {
   if (process.env.SYSTEM_PRODUCTION)
     return (
       (msg || '') +

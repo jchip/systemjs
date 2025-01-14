@@ -29,7 +29,7 @@ systemJSPrototype.createScript = function (url) {
 
 systemJSPrototype.getCurrentScript = function () {
   if (hasDocument) {
-    var lastScript = document.currentScript;
+    let lastScript: any = document.currentScript;
     if (!lastScript) {
       var scripts = document.querySelectorAll('script[src]');
       lastScript = scripts[scripts.length - 1];
@@ -51,11 +51,7 @@ function clearAutoImport(autoImport) {
 
 var systemRegister = systemJSPrototype.register;
 systemJSPrototype.register = function (deps, declare) {
-  if (
-    hasDocument &&
-    document.readyState === 'loading' &&
-    typeof deps !== 'string'
-  ) {
+  if (hasDocument && document.readyState === 'loading' && typeof deps !== 'string') {
     var lastScript = this.getCurrentScript();
     var src = lastScript && lastScript.src;
     if (src && !autoImports[src]) {
@@ -82,37 +78,33 @@ systemJSPrototype.instantiate = function (url, firstParentUrl) {
     return autoImport.r;
   }
   var loader = this;
-  return Promise.resolve(systemJSPrototype.createScript(url)).then(
-    function (script) {
-      return new Promise(function (resolve, reject) {
-        script.addEventListener('error', function () {
-          clearAutoImport(autoImports[url]);
-          reject(
-            Error(
-              errMsg(
-                3,
-                process.env.SYSTEM_PRODUCTION
-                  ? [url, firstParentUrl].join(', ')
-                  : 'Error loading ' +
-                      url +
-                      (firstParentUrl ? ' from ' + firstParentUrl : ''),
-              ),
+  return Promise.resolve(systemJSPrototype.createScript(url)).then(function (script) {
+    return new Promise(function (resolve, reject) {
+      script.addEventListener('error', function () {
+        clearAutoImport(autoImports[url]);
+        reject(
+          Error(
+            errMsg(
+              3,
+              process.env.SYSTEM_PRODUCTION
+                ? [url, firstParentUrl].join(', ')
+                : 'Error loading ' + url + (firstParentUrl ? ' from ' + firstParentUrl : ''),
             ),
-          );
-        });
-        script.addEventListener('load', function () {
-          clearAutoImport(autoImports[url]);
-          document.head.removeChild(script);
-          // Note that if an error occurs that isn't caught by this if statement,
-          // that getRegister will return null and a "did not instantiate" error will be thrown.
-          if (lastWindowErrorUrl === url) {
-            reject(lastWindowError);
-          } else {
-            resolve(loader.getRegister(url));
-          }
-        });
-        document.head.appendChild(script);
+          ),
+        );
       });
-    },
-  );
+      script.addEventListener('load', function () {
+        clearAutoImport(autoImports[url]);
+        document.head.removeChild(script);
+        // Note that if an error occurs that isn't caught by this if statement,
+        // that getRegister will return null and a "did not instantiate" error will be thrown.
+        if (lastWindowErrorUrl === url) {
+          reject(lastWindowError);
+        } else {
+          resolve(loader.getRegister(url));
+        }
+      });
+      document.head.appendChild(script);
+    });
+  });
 };

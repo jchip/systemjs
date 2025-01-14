@@ -3,7 +3,7 @@
  * Extra for the s.js build only
  * (Included by default in system.js build)
  */
-(function (global) {
+(function (global: any) {
   var systemJSPrototype = global.System.constructor.prototype;
 
   // safari unpredictably lists some new globals first or second in object order
@@ -14,11 +14,7 @@
     for (var p in global) {
       // do not check frames cause it could be removed during import
       if (shouldSkipProperty(p)) continue;
-      if (
-        (cnt === 0 && p !== firstGlobalProp) ||
-        (cnt === 1 && p !== secondGlobalProp)
-      )
-        return p;
+      if ((cnt === 0 && p !== firstGlobalProp) || (cnt === 1 && p !== secondGlobalProp)) return p;
       if (foundLastProp) {
         lastGlobalProp = p;
         result = (useFirstGlobalProp && result) || p;
@@ -89,18 +85,13 @@
     ];
   };
 
-  var isIE11 =
-    typeof navigator !== 'undefined' &&
-    navigator.userAgent.indexOf('Trident') !== -1;
+  var isIE11 = typeof navigator !== 'undefined' && navigator.userAgent.indexOf('Trident') !== -1;
 
   function shouldSkipProperty(p) {
     return (
       !global.hasOwnProperty(p) ||
       (!isNaN(p) && p < global.length) ||
-      (isIE11 &&
-        global[p] &&
-        typeof window !== 'undefined' &&
-        global[p].parent === window)
+      (isIE11 && global[p] && typeof window !== 'undefined' && global[p].parent === window)
     );
   }
 })(typeof self !== 'undefined' ? self : global);

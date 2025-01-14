@@ -28,9 +28,7 @@ var systemJSPrototype = SystemJS.prototype;
 
 systemJSPrototype.import = function (id, parentUrl, meta) {
   var loader = this;
-  parentUrl &&
-    typeof parentUrl === 'object' &&
-    ((meta = parentUrl), (parentUrl = undefined));
+  parentUrl && typeof parentUrl === 'object' && ((meta = parentUrl), (parentUrl = undefined));
   return Promise.resolve(loader.prepareImport())
     .then(function () {
       return loader.resolve(id, parentUrl, meta);
@@ -79,7 +77,7 @@ systemJSPrototype.getRegister = function () {
   }
 };
 
-export function getOrCreateLoad(loader, id, firstParentUrl, meta) {
+export function getOrCreateLoad(loader, id, firstParentUrl, meta?) {
   var load = loader[REGISTRY][id];
   if (load) return load;
 
@@ -95,12 +93,7 @@ export function getOrCreateLoad(loader, id, firstParentUrl, meta) {
       function (registration) {
         if (!registration)
           throw Error(
-            errMsg(
-              2,
-              process.env.SYSTEM_PRODUCTION
-                ? id
-                : 'Module ' + id + ' did not instantiate',
-            ),
+            errMsg(2, process.env.SYSTEM_PRODUCTION ? id : 'Module ' + id + ' did not instantiate'),
           );
         function _export(name, value) {
           // note if we have hoisted exports (including reexports)
@@ -148,8 +141,7 @@ export function getOrCreateLoad(loader, id, firstParentUrl, meta) {
       function (err) {
         load.e = null;
         load.er = err;
-        if (!process.env.SYSTEM_PRODUCTION)
-          triggerOnload(loader, load, err, true);
+        if (!process.env.SYSTEM_PRODUCTION) triggerOnload(loader, load, err, true);
         throw err;
       },
     );
@@ -237,11 +229,12 @@ function instantiateAll(loader, load, parent, loaded) {
       .catch(function (err) {
         if (load.er) throw err;
         load.e = null;
-        if (!process.env.SYSTEM_PRODUCTION)
-          triggerOnload(loader, load, err, false);
+        if (!process.env.SYSTEM_PRODUCTION) triggerOnload(loader, load, err, false);
         throw err;
       });
   }
+
+  return Promise.resolve();
 }
 
 function topLevelLoad(loader, load) {
@@ -284,12 +277,10 @@ function postOrderExec(loader, load, seen) {
   load.d.forEach(function (depLoad) {
     try {
       var depLoadPromise = postOrderExec(loader, depLoad, seen);
-      if (depLoadPromise)
-        (depLoadPromises = depLoadPromises || []).push(depLoadPromise);
+      if (depLoadPromise) (depLoadPromises = depLoadPromises || []).push(depLoadPromise);
     } catch (err) {
       load.er = err;
-      if (!process.env.SYSTEM_PRODUCTION)
-        triggerOnload(loader, load, err, false);
+      if (!process.env.SYSTEM_PRODUCTION) triggerOnload(loader, load, err, false);
       throw err;
     }
   });
@@ -305,14 +296,12 @@ function postOrderExec(loader, load, seen) {
           function () {
             load.C = load.n;
             load.E = null; // indicates completion
-            if (!process.env.SYSTEM_PRODUCTION)
-              triggerOnload(loader, load, null, true);
+            if (!process.env.SYSTEM_PRODUCTION) triggerOnload(loader, load, null, true);
           },
           function (err) {
             load.er = err;
             load.E = null;
-            if (!process.env.SYSTEM_PRODUCTION)
-              triggerOnload(loader, load, err, true);
+            if (!process.env.SYSTEM_PRODUCTION) triggerOnload(loader, load, err, true);
             throw err;
           },
         );
@@ -325,10 +314,9 @@ function postOrderExec(loader, load, seen) {
       load.er = err;
       throw err;
     } finally {
-      if (!process.env.SYSTEM_PRODUCTION)
-        triggerOnload(loader, load, load.er, true);
+      if (!process.env.SYSTEM_PRODUCTION) triggerOnload(loader, load, load.er, true);
     }
   }
 }
 
-global.System = new SystemJS();
+(global as any).System = new SystemJS();

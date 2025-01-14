@@ -5,15 +5,9 @@ import './features/node-fetch.js';
 import './extras/global.js';
 
 import { systemJSPrototype } from './system-core.js';
-import {
-  BASE_URL,
-  baseUrl,
-  resolveAndComposeImportMap,
-  IMPORT_MAP,
-  REGISTRY,
-} from './common.js';
+import { BASE_URL, baseUrl, resolveAndComposeImportMap, IMPORT_MAP, REGISTRY } from './common.js';
 
-export const System = global.System;
+export const System = (global as any).System;
 
 const IMPORT_MAP_PROMISE = Symbol();
 
@@ -46,6 +40,5 @@ export function setBaseUrl(loader, url) {
 }
 
 function ensureValidSystemLoader(loader) {
-  if (!loader[REGISTRY])
-    throw new Error('A valid SystemJS instance must be provided');
+  if (!loader[REGISTRY]) throw new Error('A valid SystemJS instance must be provided');
 }

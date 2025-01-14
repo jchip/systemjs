@@ -19,12 +19,7 @@ systemJSPrototype.set = function (id, module) {
       new URL(id);
     } catch (err) {
       console.warn(
-        Error(
-          errMsg(
-            'W3',
-            '"' + id + '" is not a valid URL to set in the module registry',
-          ),
-        ),
+        Error(errMsg('W3', '"' + id + '" is not a valid URL to set in the module registry')),
       );
     }
   }
@@ -33,8 +28,7 @@ systemJSPrototype.set = function (id, module) {
     ns = module;
   } else {
     ns = Object.assign(Object.create(null), module);
-    if (toStringTag)
-      Object.defineProperty(ns, toStringTag, { value: 'Module' });
+    if (toStringTag) Object.defineProperty(ns, toStringTag, { value: 'Module' });
   }
 
   var done = Promise.resolve(ns);
@@ -68,7 +62,7 @@ systemJSPrototype.has = function (id) {
 };
 
 // Delete function provided for hot-reloading use cases
-systemJSPrototype.delete = function (id) {
+systemJSPrototype.delete = function (id): any {
   var registry = this[REGISTRY];
   var load = registry[id];
   // in future we can support load.E case by failing load first
@@ -78,11 +72,12 @@ systemJSPrototype.delete = function (id) {
   var importerSetters = load.i;
   // remove from importerSetters
   // (release for gc)
-  if (load.d)
+  if (load.d) {
     load.d.forEach(function (depLoad) {
       var importerIndex = depLoad.i.indexOf(load);
       if (importerIndex !== -1) depLoad.i.splice(importerIndex, 1);
     });
+  }
   delete registry[id];
   return function () {
     var load = registry[id];
@@ -93,6 +88,7 @@ systemJSPrototype.delete = function (id) {
       setter(load.n);
     });
     importerSetters = null;
+    return true;
   };
 };
 
@@ -106,10 +102,7 @@ systemJSPrototype.entries = function () {
     key;
   var result = {
     next: function () {
-      while (
-        (key = keys[index++]) !== undefined &&
-        (ns = loader.get(key)) === undefined
-      );
+      while ((key = keys[index++]) !== undefined && (ns = loader.get(key)) === undefined);
       return {
         done: key === undefined,
         value: key !== undefined && [key, ns],

@@ -1,5 +1,5 @@
 import { errMsg } from '../err-msg.js';
-import { importMap } from '../features/import-maps.js';
+import { importMap } from './import-maps.js';
 import { systemJSPrototype } from '../system-core.js';
 
 /*
@@ -14,8 +14,7 @@ var instantiate = systemJSPrototype.instantiate;
 var jsContentTypeRegEx = /^(text|application)\/(x-)?javascript(;|$)/;
 systemJSPrototype.instantiate = function (url, parent, meta) {
   var loader = this;
-  if (!this.shouldFetch(url, parent, meta))
-    return instantiate.apply(this, arguments);
+  if (!this.shouldFetch(url, parent, meta)) return instantiate.apply(this, arguments);
   return this.fetch(url, {
     credentials: 'same-origin',
     integrity: importMap.integrity[url],
@@ -50,8 +49,7 @@ systemJSPrototype.instantiate = function (url, parent, meta) {
         ),
       );
     return res.text().then(function (source) {
-      if (source.indexOf('//# sourceURL=') < 0)
-        source += '\n//# sourceURL=' + url;
+      if (source.indexOf('//# sourceURL=') < 0) source += '\n//# sourceURL=' + url;
       (0, eval)(source);
       return loader.getRegister(url);
     });

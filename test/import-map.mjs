@@ -8,11 +8,7 @@ import assert from 'assert';
 // function resolveImportMap (importMap, resolvedOrPlain, parentUrl);
 
 function doResolveImportMap(id, parentUrl, importMap) {
-  return resolveImportMap(
-    importMap,
-    resolveIfNotPlainOrUrl(id, parentUrl) || id,
-    parentUrl,
-  );
+  return resolveImportMap(importMap, resolveIfNotPlainOrUrl(id, parentUrl) || id, parentUrl);
 }
 
 describe('Import Maps', function () {
@@ -69,10 +65,7 @@ describe('Import Maps', function () {
     try {
       doResolveImportMap('z', 'https://site.com', baseImportMap);
     } catch (e) {
-      assert.equal(
-        e.message,
-        'Unable to resolve bare specifier "z" from https://site.com',
-      );
+      assert.equal(e.message, 'Unable to resolve bare specifier "z" from https://site.com');
     }
   });
 
@@ -181,10 +174,7 @@ describe('Import Maps', function () {
       'https://sample.com/src/',
       newMap,
     );
-    assert.equal(
-      doResolveImportMap('g', 'https://site.com', newMap),
-      'https://sample.com/src/g',
-    );
+    assert.equal(doResolveImportMap('g', 'https://site.com', newMap), 'https://sample.com/src/g');
   });
 
   it('Supports scopes as exact ids', function () {
@@ -230,11 +220,7 @@ describe('Import Maps', function () {
       newMap,
     );
     assert.equal(
-      doResolveImportMap(
-        'x/file.js',
-        'https://sample.com/scope/something',
-        newMap,
-      ),
+      doResolveImportMap('x/file.js', 'https://sample.com/scope/something', newMap),
       'https://sample.com/src/z/file.js',
     );
   });
@@ -256,11 +242,7 @@ describe('Import Maps', function () {
       newMap,
     );
     assert.equal(
-      doResolveImportMap(
-        'f',
-        'https://sample.com/other-scope/something',
-        newMap,
-      ),
+      doResolveImportMap('f', 'https://sample.com/other-scope/something', newMap),
       'https://sample.com/other-scope-path/f.js',
     );
   });

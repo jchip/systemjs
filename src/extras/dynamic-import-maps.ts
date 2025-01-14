@@ -1,3 +1,4 @@
+declare const System: any;
 /*
  * Support for live DOM updating import maps
  */
@@ -6,7 +7,7 @@ new MutationObserver(function (mutations) {
     var mutation = mutations[i];
     if (mutation.type === 'childList')
       for (var j = 0; j < mutation.addedNodes.length; j++) {
-        var addedNode = mutation.addedNodes[j];
+        var addedNode: any = mutation.addedNodes[j];
         if (
           addedNode.tagName === 'SCRIPT' &&
           addedNode.type === 'systemjs-importmap' &&

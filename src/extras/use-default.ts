@@ -4,7 +4,7 @@
  *
  * Note: This extra is deprecated and will be removed in the next major.
  */
-(function (global) {
+(function (global: any) {
   var systemJSPrototype = global.System.constructor.prototype;
   var originalImport = systemJSPrototype.import;
 

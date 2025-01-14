@@ -4,7 +4,7 @@ import { resolveUrl } from '../common.js';
  * Loads JSON, CSS, Wasm module types based on file extension
  * filters and content type verifications
  */
-(function (global) {
+(function (global: any) {
   var systemJSPrototype = global.System.constructor.prototype;
 
   var moduleTypesRegEx = /^[^#?]+\.(css|html|json|wasm)([?#].*)?$/;
@@ -44,13 +44,7 @@ import { resolveUrl } from '../common.js';
           source = source.replace(
             /url\(\s*(?:(["'])((?:\\.|[^\n\\"'])+)\1|((?:\\.|[^\s,"'()\\])+))\s*\)/g,
             function (match, quotes, relUrl1, relUrl2) {
-              return [
-                'url(',
-                quotes,
-                resolveUrl(relUrl1 || relUrl2, url),
-                quotes,
-                ')',
-              ].join('');
+              return ['url(', quotes, resolveUrl(relUrl1 || relUrl2, url), quotes, ')'].join('');
             },
           );
           return new Response(
@@ -72,8 +66,7 @@ import { resolveUrl } from '../common.js';
             ? WebAssembly.compileStreaming(res)
             : res.arrayBuffer().then(WebAssembly.compile)
         ).then(function (module) {
-          if (!global.System.wasmModules)
-            global.System.wasmModules = Object.create(null);
+          if (!global.System.wasmModules) global.System.wasmModules = Object.create(null);
           global.System.wasmModules[url] = module;
           // we can only set imports if supported (eg early Safari doesnt support)
           var deps = [];

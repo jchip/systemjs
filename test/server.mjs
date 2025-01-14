@@ -80,10 +80,7 @@ http
       failTimeout = null;
     }
 
-    const url = new URL(
-      req.url[0] === '/' ? req.url.slice(1) : req.url,
-      rootURL,
-    );
+    const url = new URL(req.url[0] === '/' ? req.url.slice(1) : req.url, rootURL);
     const filePath = fileURLToPath(url);
 
     // redirect to test/test.html file by default
@@ -109,16 +106,14 @@ http
 
     let mime;
     if (filePath.endsWith('javascript.css')) mime = 'application/javascript';
-    else if (filePath.endsWith('content-type-xml.json'))
-      mime = 'application/xml';
+    else if (filePath.endsWith('content-type-xml.json')) mime = 'application/xml';
     else mime = mimes[path.extname(filePath)] || 'text/plain';
 
     const headers = filePath.endsWith('content-type-none.json')
       ? {}
       : { 'content-type': mime, 'Cache-Control': 'no-cache' };
 
-    if (mime !== 'application/wasm')
-      source = source.toString('utf8').replace(/\r\n/g, '\n');
+    if (mime !== 'application/wasm') source = source.toString('utf8').replace(/\r\n/g, '\n');
 
     res.writeHead(200, headers);
     res.end(source);
@@ -128,12 +123,8 @@ http
 let spawnPs;
 function start() {
   if (process.env.CI_BROWSER) {
-    const args = process.env.CI_BROWSER_FLAGS
-      ? process.env.CI_BROWSER_FLAGS.split(' ')
-      : [];
-    console.log(
-      'Spawning browser: ' + process.env.CI_BROWSER + ' ' + args.join(' '),
-    );
+    const args = process.env.CI_BROWSER_FLAGS ? process.env.CI_BROWSER_FLAGS.split(' ') : [];
+    console.log('Spawning browser: ' + process.env.CI_BROWSER + ' ' + args.join(' '));
     spawnPs = spawn(process.env.CI_BROWSER, [
       ...args,
       `http://localhost:${port}/test/${testName}.html`,

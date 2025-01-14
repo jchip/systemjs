@@ -1,12 +1,9 @@
 /*
+ * src/features/import-maps.js
+ *
  * SystemJS browser attachments for script and import map processing
  */
-import {
-  baseUrl,
-  resolveAndComposeImportMap,
-  hasDocument,
-  resolveUrl,
-} from '../common.js';
+import { baseUrl, resolveAndComposeImportMap, hasDocument, resolveUrl } from '../common.js';
 import { systemJSPrototype } from '../system-core.js';
 import { errMsg } from '../err-msg.js';
 
@@ -71,9 +68,7 @@ function processScripts() {
             .then(function (res) {
               if (!res.ok)
                 throw Error(
-                  process.env.SYSTEM_PRODUCTION
-                    ? res.status
-                    : 'Invalid status code: ' + res.status,
+                  process.env.SYSTEM_PRODUCTION ? res.status : 'Invalid status code: ' + res.status,
                 );
               return res.text();
             })
@@ -114,10 +109,7 @@ function extendImportMap(importMap, newMapText, newMapUrl) {
       Error(
         process.env.SYSTEM_PRODUCTION
           ? errMsg('W5')
-          : errMsg('W5', 'systemjs-importmap contains invalid JSON') +
-              '\n\n' +
-              newMapText +
-              '\n',
+          : errMsg('W5', 'systemjs-importmap contains invalid JSON') + '\n\n' + newMapText + '\n',
       ),
     );
   }
