@@ -6,7 +6,7 @@ import { hasSelf } from '../common';
 
 declare const importScripts: any;
 
-if (hasSelf && typeof importScripts === 'function')
+if (hasSelf && typeof importScripts === 'function') {
   systemJSPrototype.instantiate = function (url) {
     let loader = this;
     return Promise.resolve().then(function () {
@@ -14,3 +14,4 @@ if (hasSelf && typeof importScripts === 'function')
       return loader.getRegister(url);
     });
   };
+}

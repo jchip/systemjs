@@ -10,6 +10,7 @@ $pkg:
   '@rollup/plugin-json': ^4.0.2
   '@rollup/plugin-node-resolve': ^7.1.1
   '@rollup/plugin-replace': ^2.4.2
+  '@rollup/plugin-typescript': ^12.1.2
   '@swc/cli': ^0.6.0
   '@types/node': ^20.8.9
   '@vercel/ncc': ^0.34.0
@@ -351,10 +352,35 @@ $pkg:
    magic-string: ^0.25.7
   peerDependencies:
    rollup: '^1.20.0 || ^2.0.0'
+'@rollup/plugin-typescript':
+ _latest: 12.1.2
+ _:
+  ^12.1.2: 12.1.2
+ 12.1.2:
+  top: 1
+  $: sha512-cdtSp154H5sv637uMr1a8OTWB0L1SWDSm1rDGiyfcGcvQ6cuTs4MDk2BVEBGysUWago4OJN4EQZqOTl/QY3Jgg==
+  _: 'https://registry.npmjs.org/@rollup/plugin-typescript/-/plugin-typescript-12.1.2.tgz'
+  dependencies:
+   '@rollup/pluginutils': ^5.1.0
+   resolve: ^1.22.1
+  peerDependencies:
+   rollup: ^2.14.0||^3.0.0||^4.0.0
+   tslib: '*'
+   typescript: '>=3.7.0'
 '@rollup/pluginutils':
- _latest: 5.0.5
+ _latest: 5.1.4
  _:
   '^3.0.8,^3.1.0': 3.1.0
+  ^5.1.0: 5.1.4
+ 5.1.4:
+  $: sha512-USm05zrsFxYLPdWWq+K3STlWiT/3ELn3RcV5hJMghpeAIhxfsUIg6mt12CBJBInWMV4VneoV7SfGv8xIwo2qNQ==
+  _: 'https://registry.npmjs.org/@rollup/pluginutils/-/pluginutils-5.1.4.tgz'
+  dependencies:
+   '@types/estree': ^1.0.0
+   estree-walker: ^2.0.2
+   picomatch: ^4.0.2
+  peerDependencies:
+   rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
  3.1.0:
   $: sha512-GksZ6pr6TpIjHm8h9lSQ8pi8BE9VeubNT0OMJ3B5uZJ8pz73NPiqOtCog/x2/QzM1ENChPKxMDhiQuRHsqc+lg==
   _: 'https://registry.npmjs.org/@rollup/pluginutils/-/pluginutils-3.1.0.tgz'
@@ -455,9 +481,13 @@ $pkg:
   $: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==
   _: 'https://registry.npmjs.org/@tsconfig/node16/-/node16-1.0.4.tgz'
 '@types/estree':
- _latest: 1.0.3
+ _latest: 1.0.6
  _:
   0.0.39: 0.0.39
+  ^1.0.0: 1.0.6
+ 1.0.6:
+  $: sha512-AYnb1nQyY49te+VRAVgmzfcgjYS91mY5P0TKUDCLEM+gNnA+3T6rWITXRLYCpahpqSQbN5cE+gHpnPyXjHWxcw==
+  _: 'https://registry.npmjs.org/@types/estree/-/estree-1.0.6.tgz'
  0.0.39:
   $: sha512-EYNwp3bU+98cpU4lAWYYL7Zz+2gryWH1qbdDTidVd6hkiR6weksdbMadyXKXNPEkQFhXM+hVO9ZygomHXp+AIw==
   _: 'https://registry.npmjs.org/@types/estree/-/estree-0.0.39.tgz'
@@ -1715,6 +1745,10 @@ estree-walker:
  _:
   ^0.6.1: 0.6.1
   ^1.0.1: 1.0.1
+  ^2.0.2: 2.0.2
+ 2.0.2:
+  $: sha512-Rfkk/Mp/DL7JVje3u18FxFujQlTNR2q6QfMSMB7AvCBx91NGj/ba3kCfza0f6dVDbw7YlRf/nDrn7pQrCCyQ/w==
+  _: 'https://registry.npmjs.org/estree-walker/-/estree-walker-2.0.2.tgz'
  1.0.1:
   $: sha512-1fMXF3YP4pZZVozF8j/ZLfvnR8NSIljt56UhbZ5PeeDmmGHpgpdwQt7ITlGvYaQukCvuBRMLEiKiYC+oeIg4cg==
   _: 'https://registry.npmjs.org/estree-walker/-/estree-walker-1.0.1.tgz'
@@ -3464,9 +3498,13 @@ picocolors:
   $: sha512-1fygroTLlHu66zi26VoTDv8yRgm0Fccecssto+MhsZ0D/DGW2sm8E8AjW7NU5VVTRt5GxbeZ5qBuJr+HyLYkjQ==
   _: 'https://registry.npmjs.org/picocolors/-/picocolors-1.0.0.tgz'
 picomatch:
- _latest: 2.3.1
+ _latest: 4.0.2
  _:
   '^2.0.4,^2.2.2,^2.3.1': 2.3.1
+  ^4.0.2: 4.0.2
+ 4.0.2:
+  $: sha512-M7BAV6Rlcy5u+m6oPhAPFgJTzAioX/6B0DxyvDlo9l8+T3nLKbrczg2WLUyzd45L8RqfUMyGPzekbMvX2Ldkwg==
+  _: 'https://registry.npmjs.org/picomatch/-/picomatch-4.0.2.tgz'
  2.3.1:
   $: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==
   _: 'https://registry.npmjs.org/picomatch/-/picomatch-2.3.1.tgz'
@@ -3687,7 +3725,7 @@ require-main-filename:
 resolve:
  _latest: 1.22.8
  _:
-  '^1.10.0,^1.14.2': 1.22.8
+  '^1.10.0,^1.14.2,^1.22.1': 1.22.8
  1.22.8:
   $: sha512-oKWePCxqpd6FlLvGV1VU0x7bkPmmCNolxzjMf4NczoDnQcIWrAF+cPtZn5i6n+RfD2d9i0tzpKnG6Yk168yIyw==
   _: 'https://registry.npmjs.org/resolve/-/resolve-1.22.8.tgz'

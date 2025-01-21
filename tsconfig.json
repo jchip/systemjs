@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "lib",
+    "outDir": "dist",
     "lib": ["es2018", "DOM"],
     "module": "ES2022",
     "moduleResolution": "bundler",
