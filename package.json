@@ -24,8 +24,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
-    "xbuild": "chomp build",
+    "build": "chomp build",
     "xtest": "chomp test",
     "prepublishOnly": "xrun --serial [[build], xarc/check]",
     "docs": "xrun xarc/docs"

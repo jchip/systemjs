@@ -19,7 +19,7 @@ target = 'lib/##.js'
 [[task]]
 name = 'build'
 #deps = ['dist/system.js', 'dist/system.min.js', 'dist/s.js', 'dist/s.min.js', 'dist/system-node.cjs', 'dist/extras/*.js']
-deps = ['dist/system.js', 'dist/system.min.js', 'dist/s.js', 'dist/s.min.js']
+deps = ['dist/system.js', 'dist/system.min.js', 'dist/s.js', 'dist/s.min.js', 'dist/extras/*.js']
 
 [[task]]
 target = 'dist/system.js'
@@ -74,6 +74,7 @@ package = '@rollup/plugin-replace'
 "process.env.SYSTEM_BROWSER" = 'true'
 [[task.template-options.plugin]]
 package = '@rollup/plugin-typescript'
+declaration = false
 
 [[task]]
 target = 'dist/##.min.js'
