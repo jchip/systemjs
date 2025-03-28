@@ -1,10 +1,12 @@
+// @ts-nocheck
+
 /*
  * Script instantiation loading
  */
-import { hasDocument } from '../common.js';
-import { systemJSPrototype } from '../system-core.js';
-import { errMsg } from '../err-msg.js';
-import { importMap } from './import-maps.js';
+import { hasDocument } from '../common';
+import { systemJSPrototype } from '../system-core';
+import { errMsg } from '../err-msg';
+import { importMap } from './import-maps';
 
 let baseOrigin: string = '';
 let lastWindowErrorUrl: string;

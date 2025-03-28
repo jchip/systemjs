@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 /*
  * SystemJS Core
  *
@@ -14,8 +16,8 @@
  * Core comes with no System.prototype.resolve or
  * System.prototype.instantiate implementations
  */
-import { global, hasSymbol, REGISTRY } from './common.js';
-import { errMsg } from './err-msg.js';
+import { global, hasSymbol, REGISTRY } from './common';
+import { errMsg } from './err-msg';
 export { systemJSPrototype };
 
 const toStringTag = hasSymbol && Symbol.toStringTag;

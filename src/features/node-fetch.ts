@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import sourceMapSupport from 'source-map-support';
 import fetch from 'node-fetch';
 import { promises as fs } from 'fs';

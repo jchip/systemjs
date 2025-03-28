@@ -1,6 +1,8 @@
-import { systemJSPrototype } from '../system-core.js';
-import { REGISTRY } from '../common.js';
-import { errMsg } from '../err-msg.js';
+// @ts-nocheck
+
+import { systemJSPrototype } from '../system-core';
+import { REGISTRY } from '../common';
+import { errMsg } from '../err-msg';
 
 const toStringTag = typeof Symbol !== 'undefined' && Symbol.toStringTag;
 

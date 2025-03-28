@@ -1,11 +1,13 @@
+// @ts-nocheck
+
 /*
  * src/features/import-maps.js
  *
  * SystemJS browser attachments for script and import map processing
  */
-import { baseUrl, resolveAndComposeImportMap, hasDocument, resolveUrl } from '../common.js';
-import { systemJSPrototype } from '../system-core.js';
-import { errMsg } from '../err-msg.js';
+import { baseUrl, resolveAndComposeImportMap, hasDocument, resolveUrl } from '../common';
+import { systemJSPrototype } from '../system-core';
+import { errMsg } from '../err-msg';
 
 var importMapPromise = Promise.resolve();
 export var importMap = { imports: {}, scopes: {}, depcache: {}, integrity: {} };

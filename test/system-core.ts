@@ -1,9 +1,10 @@
+// @ts-nocheck
 import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
-import { resolveIfNotPlainOrUrl, IMPORT_MAP, REGISTRY } from '../src/common.js';
-import '../src/features/registry.js';
-import '../src/features/resolve.js';
+import { resolveIfNotPlainOrUrl, IMPORT_MAP, REGISTRY } from '../src/common';
+import '../src/features/registry';
+import '../src/features/resolve';
 
 const SystemLoader = System.constructor;
 

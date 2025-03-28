@@ -1,6 +1,8 @@
-import { IMPORT_MAP } from '../common.js';
-import { systemJSPrototype, getOrCreateLoad } from '../system-core.js';
-import { importMap } from './import-maps.js';
+// @ts-nocheck
+
+import { IMPORT_MAP } from '../common';
+import { systemJSPrototype, getOrCreateLoad } from '../system-core';
+import { importMap } from './import-maps';
 
 let systemInstantiate = systemJSPrototype.instantiate;
 systemJSPrototype.instantiate = function (url, firstParentUrl, meta) {

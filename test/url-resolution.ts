@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { resolveIfNotPlainOrUrl } from '../src/common.js';
+import { resolveIfNotPlainOrUrl } from '../src/common';
 
 describe('Simple normalization tests', function () {
   it('Should resolve relative with protocol', function () {

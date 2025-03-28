@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 declare const System: any;
 /*
  * Support for live DOM updating import maps

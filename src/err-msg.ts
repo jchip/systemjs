@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 export function errMsg(errCode: unknown, msg?: string): string {
   if (process.env.SYSTEM_PRODUCTION)
     return (

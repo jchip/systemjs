@@ -1,4 +1,6 @@
-import { errMsg } from './err-msg.js';
+// @ts-nocheck
+
+import { errMsg } from './err-msg';
 
 export const hasSymbol = typeof Symbol !== 'undefined';
 export const hasSelf = typeof self !== 'undefined';

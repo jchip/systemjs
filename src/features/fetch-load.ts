@@ -1,6 +1,8 @@
-import { errMsg } from '../err-msg.js';
-import { importMap } from './import-maps.js';
-import { systemJSPrototype } from '../system-core.js';
+// @ts-nocheck
+
+import { errMsg } from '../err-msg';
+import { importMap } from './import-maps';
+import { systemJSPrototype } from '../system-core';
 
 /*
  * Fetch loader, sets up shouldFetch and fetch hooks

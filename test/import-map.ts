@@ -2,7 +2,7 @@ import {
   resolveAndComposeImportMap,
   resolveImportMap,
   resolveIfNotPlainOrUrl,
-} from '../src/common.js';
+} from '../src/common';
 import assert from 'assert';
 
 // function resolveImportMap (importMap, resolvedOrPlain, parentUrl);

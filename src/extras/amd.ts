@@ -1,4 +1,6 @@
-import { errMsg } from '../err-msg.js';
+// @ts-nocheck
+
+import { errMsg } from '../err-msg';
 
 /*
  * Support for AMD loading

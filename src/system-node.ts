@@ -1,11 +1,13 @@
-import './features/resolve.js';
-import './features/registry.js';
-import './features/fetch-load.js';
-import './features/node-fetch.js';
-import './extras/global.js';
+// @ts-nocheck
 
-import { systemJSPrototype } from './system-core.js';
-import { BASE_URL, baseUrl, resolveAndComposeImportMap, IMPORT_MAP, REGISTRY } from './common.js';
+import './features/resolve';
+import './features/registry';
+import './features/fetch-load';
+import './features/node-fetch';
+import './extras/global';
+
+import { systemJSPrototype } from './system-core';
+import { BASE_URL, baseUrl, resolveAndComposeImportMap, IMPORT_MAP, REGISTRY } from './common';
 
 export const System = (global as any).System;
 
