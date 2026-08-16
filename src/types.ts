@@ -138,4 +138,16 @@ export interface SystemJSLoader {
   has(id: string): boolean;
   delete(id: string): false | (() => false | void);
   entries(): IterableIterator<[string, ModuleNamespace]>;
+
+  /* members installed at runtime by optional extras */
+  /** named-register / amd extras: registry of named System.register definitions */
+  registerRegistry?: { [name: string]: Registration | null };
+  /** named-register extra: aliases from bare names to canonical URLs */
+  namedRegisterAliases?: { [name: string]: string };
+  /** transform extra (deprecated): hookable source transform */
+  transform?(id: string, source: string): string | Promise<string>;
+  /** global extra: opt-in flag for first-new-global detection (Safari ordering) */
+  firstGlobalProp?: boolean;
+  /** module-types extra: cache of compiled WebAssembly modules by URL */
+  wasmModules?: { [url: string]: any };
 }
