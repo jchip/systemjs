@@ -25,6 +25,9 @@ interface HTMLScriptElement {
   // sp marker = systemjs processed
   sp?: boolean;
   fetchPriority?: string;
+  // loosened from OnErrorEventHandler so the zero-arg invocation in
+  // import-maps.ts needs no emit-visible cast
+  onerror: any;
 }
 
 interface RequestInit {
