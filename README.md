@@ -242,13 +242,13 @@ Third party libraries and npm packages may be used as long as they are published
 
 Project bug fixes and changes are welcome for discussion, provided the project footprint remains minimal.
 
-Task running is handled by Chomp (https://chompbuild.com).
+Task running is handled by npm scripts (composed with [@xarc/run](https://github.com/electrode-io/xarc-run) — see `xrun-tasks.js`), with the bundles built by Rollup (`rollup.config.js`).
 
 To run the tests:
 
 ```
-npm install -g chomp
-chomp test
+npm install
+npm test
 ```
 
 ## Changes

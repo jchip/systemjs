@@ -7,3 +7,4 @@ Task tracking: `tasks` MCP project **systemjs** (prefix `SJS`).
 ## Documents
 
 - [ts-conversion.md](./ts-conversion.md) — SJS-1 exploration: converting src/ to TypeScript with real types (branch `explore/typescript-conversion`).
+- [build-migration.md](./build-migration.md) — chomp → npm scripts/xrun + rollup.config.js migration (same branch).
