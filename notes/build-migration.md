@@ -16,9 +16,17 @@ Follow-up to [ts-conversion.md](./ts-conversion.md), same branch. Replaces the c
 
 `chompfile.toml` and `terser.js` deleted. README contributing section updated.
 
-## Known differences vs chomp (acceptable, verify in SJS-6)
+## Known differences vs chomp (verified 2026-08-16, SJS-6/SJS-7)
 
-- No incremental/cached builds — chomp skipped up-to-date targets; `rollup -c` always rebuilds everything (~seconds at this size).
-- `.min.js.map` now maps back to the TS sources through the whole rollup pipeline; chomp's maps only covered the minify step (unminified dist → min). Richer, but map files will differ.
-- Min files: chomp wrote `code + "\n"`; rollup/terser handles final newline itself — possible 1-byte diff.
-- Unverified API assumptions: `exec({ cmd, env })` form for @xarc/run env vars; ncc programmatic `{ esm: false }` option name.
+- No incremental/cached builds — chomp skipped up-to-date targets; `rollup -c` always rebuilds everything (~5s total).
+- `.min.js.map` now maps back to the TS sources through the whole rollup pipeline; chomp's maps only covered the minify step (unminified dist → min). Richer, but map files differ from committed ones.
+- ~~Unverified API assumptions~~ both verified working: `exec({ cmd, env })` env vars reach the child (tsx/WATCH_MODE), and ncc programmatic `{ esm: false }` emits CJS (node suite passes against the output).
+
+## Verification results (SJS-6, run on macOS / Node 26 / headless Chrome)
+
+- `fyn install` → `xrun build` → `xrun typecheck` → `xrun test` all pass: browser suite (server + headless Chrome hit `/done`), internal 173 passing / 1 pending, node 7 passing.
+- **All `.min.js` outputs are byte-identical to the committed dist** after two fixes (SJS-7):
+  - newer terser 5.x flipped the `format.wrap_func_args` default to false — now pinned `true` in rollup.config.js;
+  - the TS conversion had made a boolean-to-number coercion explicit (`? 1 : 0`) in common.ts `resolveIfNotPlainOrUrl` — reverted to the implicit coercion via an erased cast.
+- Unminified dist bundles differ from committed only in comment text (TS source comments); `system-node.cjs` differs because committed one was built by ncc 0.34 from the old JS. Committed dist left untouched — refreshing it is a release-time decision.
+- Gotcha: `rollup -c` does NOT fail on TS type errors (`onwarn(){}` swallows @rollup/plugin-typescript diagnostics) — but `xrun build:node` does (ncc aborts on them), and `xrun typecheck` is the real guard. Keep typecheck in CI if build ordering ever changes.

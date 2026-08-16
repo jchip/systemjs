@@ -9,9 +9,10 @@ var envGlobal: any = hasSelf ? self : global;
 export { envGlobal as global };
 
 // Loader-scoped baseUrl and import map supported in Node.js only
-// (typed any: runtime-conditional symbol-or-string keys cannot be statically typed)
-export var BASE_URL: any = hasSymbol ? Symbol() : '_';
-export var IMPORT_MAP: any = hasSymbol ? Symbol() : '#';
+// (branded via globals.d.ts so loader[KEY] resolves to SystemJSLoader slots;
+// runtime values are Symbols, or one-character strings pre-ES2015)
+export var BASE_URL: typeof BASE_URL_KEY = hasSymbol ? Symbol() : '_' as any;
+export var IMPORT_MAP: typeof IMPORT_MAP_KEY = hasSymbol ? Symbol() : '#' as any;
 
 export var baseUrl: string | undefined;
 
@@ -65,7 +66,8 @@ export function resolveIfNotPlainOrUrl (relUrl: string, parentUrl: string): stri
     }
     else {
       // resolving to :/ so pathname is the /... part
-      pathname = parentUrl.slice(parentProtocol.length + (parentUrl[parentProtocol.length] === '/' ? 1 : 0));
+      // implicit boolean-to-number coercion kept (cast, not ?1:0) for identical emit
+      pathname = parentUrl.slice(parentProtocol.length + ((parentUrl[parentProtocol.length] === '/') as any));
     }
 
     if (relUrl[0] === '/')

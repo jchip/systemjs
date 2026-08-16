@@ -20,8 +20,9 @@ import type { ImporterSetter, LoadRecord, ModuleNamespace, Registration, SystemJ
 export { systemJSPrototype, REGISTRY }
 
 var toStringTag = hasSymbol && Symbol.toStringTag;
-// typed any: runtime-conditional symbol-or-string key cannot be statically typed
-var REGISTRY: any = hasSymbol ? Symbol() : '@';
+// branded as REGISTRY_KEY (globals.d.ts) so loader[REGISTRY] resolves to the
+// Registry slot on SystemJSLoader; runtime value is a Symbol or '@'
+var REGISTRY: typeof REGISTRY_KEY = hasSymbol ? Symbol() : '@' as any;
 
 function SystemJS (this: SystemJSLoader) {
   this[REGISTRY] = {};

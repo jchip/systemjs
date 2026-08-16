@@ -43,7 +43,7 @@ systemJSPrototype.set = function (id, module) {
     e: null,
     er: undefined,
     E: undefined
-  } as LoadRecord);
+  } as unknown as LoadRecord);
 
   if (load.e || load.E)
     return false;
@@ -112,7 +112,7 @@ systemJSPrototype.entries = function () {
     }
   };
 
-  result[iterator] = function() { return this };
+  result[iterator as typeof Symbol.iterator] = function() { return this };
 
   return result;
 };

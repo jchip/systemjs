@@ -112,6 +112,13 @@ export interface FetchResult {
  * build (system.js vs s.js vs system-node.cjs).
  */
 export interface SystemJSLoader {
+  /* private per-instance state, stored under runtime-conditional keys
+     (REGISTRY / BASE_URL / IMPORT_MAP / IMPORT_MAP_PROMISE — see globals.d.ts) */
+  [REGISTRY_KEY]: Registry;
+  [BASE_URL_KEY]?: string;
+  [IMPORT_MAP_KEY]?: ImportMap;
+  [IMPORT_MAP_PROMISE_KEY]?: Promise<void>;
+
   /* core */
   import(id: string, parentUrl?: string | object, meta?: object): Promise<ModuleNamespace>;
   createContext(parentId: string): SystemContext;

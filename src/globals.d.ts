@@ -15,6 +15,18 @@ declare var process: {
 
 declare var global: any;
 
+/*
+ * Type-only brands for the loader's private state keys. At runtime each key is
+ * a fresh Symbol (or a one-character string when Symbol is unavailable), so it
+ * cannot be a real `unique symbol` — these ambient consts exist purely so the
+ * keys can be given distinct types and declared as slots on SystemJSLoader.
+ * They have no runtime value and must never be referenced in emitted code.
+ */
+declare const REGISTRY_KEY: unique symbol;
+declare const BASE_URL_KEY: unique symbol;
+declare const IMPORT_MAP_KEY: unique symbol;
+declare const IMPORT_MAP_PROMISE_KEY: unique symbol;
+
 // The global System instance installed by system-core
 declare var System: import('./types').SystemJSLoader;
 

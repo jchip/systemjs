@@ -20,6 +20,11 @@ const terserOptions = {
     pure_getters: true,
     passes: 2,
     unsafe: false
+  },
+  format: {
+    // terser changed the default to false in later 5.x releases; the published
+    // dist was minified when it was true — pin it to keep output identical
+    wrap_func_args: true
   }
 };
 
