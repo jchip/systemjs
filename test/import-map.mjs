@@ -1,4 +1,4 @@
-import { resolveAndComposeImportMap, resolveImportMap, resolveIfNotPlainOrUrl } from '../src/common.js';
+import { resolveAndComposeImportMap, resolveImportMap, resolveIfNotPlainOrUrl } from '../src/common.ts';
 import assert from 'assert';
 
 // function resolveImportMap (importMap, resolvedOrPlain, parentUrl);

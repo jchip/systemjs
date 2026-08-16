@@ -1,10 +1,10 @@
 import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
-import { resolveIfNotPlainOrUrl, IMPORT_MAP } from '../src/common.js';
-import '../src/features/registry.js';
-import { REGISTRY } from '../src/system-core.js';
-import '../src/features/resolve.js';
+import { resolveIfNotPlainOrUrl, IMPORT_MAP } from '../src/common.ts';
+import '../src/features/registry.ts';
+import { REGISTRY } from '../src/system-core.ts';
+import '../src/features/resolve.ts';
 
 const SystemLoader = System.constructor;
 

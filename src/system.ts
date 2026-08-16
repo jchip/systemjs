@@ -1,0 +1,9 @@
+import './features/script-load';
+import './features/fetch-load';
+import './features/resolve';
+import './features/import-maps';
+import './features/depcache';
+import './features/worker-load';
+import './extras/global';
+import './extras/module-types';
+import './features/registry';
