@@ -97,10 +97,11 @@ import type { ImporterSetter, Registration } from '../types';
       if ((System as any).registerRegistry) {
         (System as any).registerRegistry[name] = amdRegister;
         System.register(name, amdRegister[0], amdRegister[1]);
-      } else
+      } else {
         console.warn(process.env.SYSTEM_PRODUCTION ? errMsg('W6') : errMsg('W6', 'Include named-register.js for full named define support'));
         // TODO: create new warning number and documentation for using named define without named-register extra
         System.register(amdRegister[0], amdRegister[1]);
+      }
     } else
       System.register(amdRegister[0], amdRegister[1]);
   };
