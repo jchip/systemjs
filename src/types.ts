@@ -134,6 +134,7 @@ export interface SystemJSLoader {
   shouldFetch(url?: string, parent?: string, meta?: object): boolean;
   fetch(url: any, init?: any): Promise<FetchResult>;
   createScript(url: string): HTMLScriptElement;
+  getCurrentScript(): HTMLScriptElement | null;
 
   /* import maps */
   addImportMap(newMap: RawImportMap, mapBase?: string): void;

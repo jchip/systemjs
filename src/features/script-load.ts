@@ -30,14 +30,26 @@ systemJSPrototype.createScript = function (url) {
   return script;
 };
 
+systemJSPrototype.getCurrentScript = function() {
+  if (hasDocument) {
+    var lastScript = document.currentScript as HTMLScriptElement | null;
+    if (!lastScript) {
+      var scripts = document.querySelectorAll<HTMLScriptElement>('script[src]');
+      lastScript = scripts[scripts.length - 1];
+    }
+    return lastScript;
+  }
+
+  return null;
+}
+
 // Auto imports -> script tags can be inlined directly for load phase
 var lastAutoImportUrl: string | undefined, lastAutoImportDeps: string[] | undefined, lastAutoImportTimeout: any;
 var autoImportCandidates: { [url: string]: Registration } = {};
 var systemRegister = systemJSPrototype.register;
 systemJSPrototype.register = function (deps, declare) {
   if (hasDocument && document.readyState === 'loading' && typeof deps !== 'string') {
-    var scripts = document.querySelectorAll<HTMLScriptElement>('script[src]');
-    var lastScript = scripts[scripts.length - 1];
+    var lastScript = this.getCurrentScript();
     if (lastScript) {
       lastAutoImportUrl = lastScript.src;
       lastAutoImportDeps = deps;
@@ -45,8 +57,8 @@ systemJSPrototype.register = function (deps, declare) {
       // so this re-import has no consequence
       var loader = this;
       lastAutoImportTimeout = setTimeout(function () {
-        autoImportCandidates[lastScript.src] = [deps, declare] as Registration;
-        loader.import(lastScript.src);
+        autoImportCandidates[lastScript!.src] = [deps, declare] as Registration;
+        loader.import(lastScript!.src);
       });
     }
   }
